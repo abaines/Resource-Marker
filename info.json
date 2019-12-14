@@ -4,7 +4,7 @@
     "title": "Resource Map Label Marker",
     "author": "Kizrak",
     "contact": "",
-    "homepage": "https://github.com/abaines/TBD",
+    "homepage": "https://github.com/abaines/Resource-Marker",
     "factorio_version": "0.17",
     "dependencies": ["base >= 0.17.79"],
     "description": "Creates resource map label markers when chunks get generated. See through fog of war."

@@ -28,19 +28,69 @@ local function getResourceCounts(resources)
 end
 
 
+local function getXY(area)
+	local x = math.floor( (area.left_top.x + area.right_bottom.x)/2 /32 )
+	local y = math.floor( (area.left_top.y + area.right_bottom.y)/2 /32 )
+
+	return x,y
+end
+
+
+local function printResourceMap()
+	for res,value1 in pairs(global["resourceMap"]) do
+		log("      " .. res)
+		for xx,value2 in pairs(value1) do
+			for yy,value3 in pairs(value2) do
+				log("         " .. xx..','..yy..','..value3)
+			end
+		end
+	end
+end
+
+
+local function updateGlobal(name,x,y,amount)
+	--log(name..','..x..','..y..','..amount)
+	if global["resourceMap"] == nil then
+		global["resourceMap"] = {}
+	end
+
+	if global["resourceMap"][name] == nil then
+		global["resourceMap"][name] = {}
+	end
+
+	if global["resourceMap"][name][x] == nil then
+		global["resourceMap"][name][x] = {}
+	end
+
+	global["resourceMap"][name][x][y] = amount
+end
+
+
+local function updateGlobalForTile(x,y,resourcesFound)
+	for name,amount in pairs(resourcesFound) do
+		updateGlobal(name,x,y,amount)
+	end
+end
+
+
 local function on_chunk_generated(event)
 	local area = event.area
 	local surface = event.surface
 
-	local x = (area.left_top.x + area.right_bottom.x)/2
-	local y = (area.left_top.y + area.right_bottom.y)/2
+	local x,y = getXY(area)
 
 	local arrayOfLuaEntity = surface.find_entities_filtered{area=area,type = "resource"}
 
 	if tableSize(arrayOfLuaEntity) > 0 then
 		local resourcesFound = getResourceCounts(arrayOfLuaEntity)
 
-		log(serpent.block( resourcesFound ))
+		updateGlobalForTile(x,y,resourcesFound)
+	end
+
+	if game.tick>120 and not global.printed then
+		--log(serpent.block( global.resourceMap ))
+		global.printed = true
+		printResourceMap()
 	end
 end
 

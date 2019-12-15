@@ -1,6 +1,9 @@
 -- Kizrak
 
 
+local util = require("util")
+
+
 local function sb(object)
 	return serpent.block( object )
 end
@@ -221,7 +224,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local tag = force.add_chart_tag(surface,
 	{
 		position = position,
-		text = total,
+		text = util.format_number(total,true),
 	})
 
 	if tag==nil then

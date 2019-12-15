@@ -186,6 +186,13 @@ local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 
 		for key,value in pairs(chunkPositions) do
 			chunkPositions[key] = value
+
+			local x,y = dekeyXY(key)
+			local nextChunks = getNearbyChartedChunks(surface,force,{x=x,y=y},resource)
+
+			for key2,value2 in pairs(nextChunks) do
+				chunkPositions[key2] = value2
+			end
 		end
 
 		local sizeEnd = table_size(chunkPositions)
@@ -217,9 +224,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 
 	local x = xCenter/total
 	local y = yCenter/total
-	log(resource .. "   " .. total .. "   " .. x .. "   " .. y)
-
-	local position = {x*32+16,y*32+16}
+	local position = {x=x*32+16,y=y*32+16}
 
 	local tag = force.add_chart_tag(surface,
 	{
@@ -228,17 +233,18 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	})
 
 	if tag==nil then
-		log("NIL TAG!")
-		game.print("NIL TAG!")
-		game.print(sb(position))
-	end
+		local warning = "NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
+		log(warning)
+		game.print(warning)
 
-	for key,value in pairs(flood) do
-		local oldTag = value.tag
-		if oldTag and oldTag.valid then
-			oldTag.destroy()
+	else -- able to place new tag, so remove olds ones
+		for key,value in pairs(flood) do
+			local oldTag = value.tag
+			if oldTag and oldTag.valid then
+				oldTag.destroy()
+			end
+			value.tag = tag
 		end
-		value.tag = tag
 	end
 end
 

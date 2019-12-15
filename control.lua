@@ -63,7 +63,7 @@ local function printResourceMap()
 end
 
 
-local function updateGlobal(surface,name,x,y,amount)
+local function updateGlobalResourceMap(surface,name,x,y,amount)
 	--log(name..','..x..','..y..','..amount)
 	if global["resourceMap"] == nil then
 		global["resourceMap"] = {}
@@ -85,9 +85,9 @@ local function updateGlobal(surface,name,x,y,amount)
 end
 
 
-local function updateGlobalForTile(surface,x,y,resourcesFound)
+local function updateGlobalResourceMapForTile(surface,x,y,resourcesFound)
 	for name,amount in pairs(resourcesFound) do
-		updateGlobal(surface,name,x,y,amount)
+		updateGlobalResourceMap(surface,name,x,y,amount)
 	end
 end
 
@@ -102,7 +102,7 @@ local function on_chunk_generated(event)
 	if tableSize(arrayOfLuaEntity) > 0 then
 		local resourcesFound = getResourceCounts(arrayOfLuaEntity)
 
-		updateGlobalForTile(surface,x,y,resourcesFound)
+		updateGlobalResourceMapForTile(surface,x,y,resourcesFound)
 
 		local players = game.forces['player']
 		local position = getXYCenterPosition(area)
@@ -174,11 +174,15 @@ local function on_chunk_charted(event)
 
 		log(text)
 
-		force.add_chart_tag(surface,
+		local tag = force.add_chart_tag(surface,
 		{
 			position = position,
 			text = text,
 		})
+
+		if tag==nil then
+			log("NIL TAG!")
+		end
 	end
 end
 

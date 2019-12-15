@@ -226,16 +226,27 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local y = yCenter/total
 	local position = {x=x*32+16,y=y*32+16}
 
+	local signalID = {
+		type="virtual",
+		name="signal-dot",
+	}
+
+	if global["iconTypes"][resource] then
+		signalID.type = global["iconTypes"][resource]
+		signalID.name = resource
+	end
+
 	local tag = force.add_chart_tag(surface,
 	{
 		position = position,
 		text = util.format_number(total,true),
+		icon = signalID,
 	})
 
 	if tag==nil then
 		local warning = "NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
 		log(warning)
-		game.print(warning)
+		--game.print(warning)
 
 	else -- able to place new tag, so remove olds ones
 		for key,value in pairs(flood) do
@@ -267,4 +278,23 @@ end
 script.on_event({
 	defines.events.on_chunk_charted
 },on_chunk_charted)
+
+
+
+
+local function calculateIconTypes()
+	global["iconTypes"] = {}
+	for k,v in pairs(game.virtual_signal_prototypes) do
+		global["iconTypes"][k] = "virtual"
+	end
+	for k,v in pairs(game.item_prototypes) do
+		global["iconTypes"][k] = "item"
+	end
+	for k,v in pairs(game.fluid_prototypes) do
+		global["iconTypes"][k] = "fluid"
+	end
+	--log(sb( global["iconTypes"] ))
+end
+
+script.on_init(calculateIconTypes)
 

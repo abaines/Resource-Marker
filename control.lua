@@ -28,11 +28,17 @@ local function getResourceCounts(resources)
 end
 
 
-local function getXY(area)
-	local x = math.floor( (area.left_top.x + area.right_bottom.x)/2 /32 )
-	local y = math.floor( (area.left_top.y + area.right_bottom.y)/2 /32 )
+local function getXYCenter(area)
+	local x = (area.left_top.x + area.right_bottom.x)/2
+	local y = (area.left_top.y + area.right_bottom.y)/2
 
 	return x,y
+end
+
+local function getXY(area)
+	x,y = getXYCenter(area)
+
+	return math.floor( x /32 ), math.floor( y /32 )
 end
 
 
@@ -117,9 +123,14 @@ local function on_chunk_charted(event)
 	local area = event.area -- BoundingBox: Area of the chunk.
 	local force = event.force -- LuaForce
 
-	local x,y = getXY(area)
+	local surface = game.surfaces[surface_index]
+	local xc,yc = getXYCenter(area)
 
-	log(x..","..y)
+	force.add_chart_tag(surface,
+	{
+		position = {xc,yc},
+		text = "hiya",
+	})
 end
 
 

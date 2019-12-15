@@ -1,6 +1,10 @@
 -- Kizrak
 
 
+local function sb(object)
+	return serpent.block( object )
+end
+
 local function tableSize(someTable)
 	local count = 0
 	for _,_ in pairs(someTable) do
@@ -127,6 +131,16 @@ script.on_event({
 
 
 
+local function getXYKey(x,y)
+	return math.floor(x)..','..math.floor(y)
+end
+
+local function dekeyXY(key)
+	local x, y = key:match("([^,]+),([^,]+)")
+	return math.floor(x),math.floor(y)
+end
+
+
 local function getGlobalDataForChunkPosition(surface,x,y)
 	local surfaceData = global["resourceMap"][surface.name]
 	local data = {}
@@ -151,16 +165,43 @@ end
 
 
 local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
-	log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y )
+	--log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y)
+	local chunkPositions = {}
+
 	for x=chunkPosition.x-1,chunkPosition.x+1 do
 		for y=chunkPosition.y-1,chunkPosition.y+1 do
 			local data = getGlobalDataForChunkPosition(surface, x, y)
-			if data and data[resource] then
-				log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
+			if data and data[resource] and force.is_chunk_charted(surface,chunkPosition) then
+				--log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
+				--table.insert(chunkPositions,{x=x,y=y})
+				chunkPositions[getXYKey(x,y)] = true
 			end
 		end
 	end
-	--log(serpent.block( getGlobalDataForChunkPosition(surface,chunkPosition.x, chunkPosition.y) ))
+
+	return chunkPositions
+end
+
+local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
+
+	local chunkPositions = getNearbyChartedChunks(surface,force,chunkPosition,resource)
+
+	for i=0,1000 do
+		local sizeStart = tableSize(chunkPositions)
+
+		for key,value in pairs(chunkPositions) do
+			chunkPositions[key] = true
+		end
+
+		local sizeEnd = tableSize(chunkPositions)
+
+		if sizeStart == sizeEnd then
+			return chunkPositions
+		end
+	end
+
+	log("EXCESSIVE FLOODING!")
+	return chunkPositions
 end
 
 
@@ -174,7 +215,9 @@ local function on_chunk_charted(event)
 	local resourceData = getGlobalDataForArea(surface,area)
 
 	for resource, value in pairs(resourceData) do
-		getNearbyChartedChunks(surface,force,chunkPosition,resource)
+		local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
+		log(resource)
+		log(sb(flood))
 	end
 
 --		local position = getXYCenterPosition(area)

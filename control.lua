@@ -44,6 +44,7 @@ end
 
 local function printResourceMap()
 	for surface,value1 in pairs(global["resourceMap"]) do
+		log("   " .. surface)
 		for res,value2 in pairs(value1) do
 			log("      " .. res)
 			for xx,value3 in pairs(value2) do
@@ -117,6 +118,23 @@ script.on_event({
 
 
 
+local function getGlobalData(surface,area)
+	local x,y = getXY(area)
+	local surfaceData = global["resourceMap"][surface.name]
+	local data = {}
+
+	for resource,value in pairs(surfaceData) do
+		if value and value[x] and value[x][y] then
+			local amount = value[x][y]
+			--log(resource .. "   " .. amount )
+			data[resource] = amount
+		end
+	end
+
+	return data
+end
+
+
 local function on_chunk_charted(event)
 	local surface_index = event.surface_index -- uint
 	local position = event.position -- ChunkPosition
@@ -125,6 +143,12 @@ local function on_chunk_charted(event)
 
 	local surface = game.surfaces[surface_index]
 	local xc,yc = getXYCenter(area)
+
+	local resourceData = getGlobalData(surface,area)
+	if tableSize(resourceData) > 0 then
+		log(serpent.block( resourceData ))
+	end
+
 
 	force.add_chart_tag(surface,
 	{

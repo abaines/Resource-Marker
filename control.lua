@@ -55,7 +55,7 @@ local function printResourceMap()
 			log("      " .. res)
 			for xx,value3 in pairs(value2) do
 				for yy,value4 in pairs(value3) do
-					log("         " .. xx..','..yy..','..value4)
+					log("         " .. xx..','..yy..','..value4.amount)
 				end
 			end
 		end
@@ -81,7 +81,7 @@ local function updateGlobalResourceMap(surface,name,x,y,amount)
 		global["resourceMap"][surface.name][name][x] = {}
 	end
 
-	global["resourceMap"][surface.name][name][x][y] = amount
+	global["resourceMap"][surface.name][name][x][y] = { amount = amount }
 end
 
 
@@ -144,36 +144,44 @@ local function getGlobalData(surface,area)
 end
 
 
+local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
+	log(serpent.block( chunkPosition ))
+end
+
+
 local function on_chunk_charted(event)
 	local surface_index = event.surface_index -- uint
-	local position = event.position -- ChunkPosition
+	local chunkPosition = event.position -- ChunkPosition
 	local area = event.area -- BoundingBox: Area of the chunk.
 	local force = event.force -- LuaForce
 
 	local surface = game.surfaces[surface_index]
 	local resourceData = getGlobalData(surface,area)
 
+	log(serpent.block( chunkPosition ))
+
 	local size = tableSize(resourceData)
 	if size > 0 then
-		local position = getXYCenterPosition(area)
 
-		log(serpent.block( resourceData ))
+		--log(serpent.block( resourceData ))
 
 		local text = ""
 
 		if size==1 then
-			for resource, amount in next,resourceData do
-				text = resource.. "   " .. amount
+			for resource, value in next,resourceData do
+				text = resource.. "   " .. value.amount
 			end
 		elseif size>1 then
-			for resource, amount in pairs(resourceData) do
+			for resource, value in pairs(resourceData) do
 				text = resource .. " & " .. text
 			end
 			text = text:sub(1, -4)
 		end
 
-		log(text)
+		--log(text)
 
+		local position = getXYCenterPosition(area)
+		log(serpent.block( position ))
 		local tag = force.add_chart_tag(surface,
 		{
 			position = position,

@@ -153,15 +153,31 @@ local function on_chunk_charted(event)
 	local surface = game.surfaces[surface_index]
 	local resourceData = getGlobalData(surface,area)
 
-	if tableSize(resourceData) > 0 then
+	local size = tableSize(resourceData)
+	if size > 0 then
 		local position = getXYCenterPosition(area)
 
 		log(serpent.block( resourceData ))
 
+		local text = ""
+
+		if size==1 then
+			for resource, amount in next,resourceData do
+				text = resource.. "   " .. amount
+			end
+		elseif size>1 then
+			for resource, amount in pairs(resourceData) do
+				text = resource .. " & " .. text
+			end
+			text = text:sub(1, -4)
+		end
+
+		log(text)
+
 		force.add_chart_tag(surface,
 		{
 			position = position,
-			text = serpent.block( resourceData ),
+			text = text,
 		})
 	end
 end

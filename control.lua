@@ -36,9 +36,15 @@ local function getXYCenter(area)
 end
 
 local function getXY(area)
-	x,y = getXYCenter(area)
+	local x,y = getXYCenter(area)
 
 	return math.floor( x /32 ), math.floor( y /32 )
+end
+
+local function getXYCenterPosition(area)
+	local x,y = getXYCenter(area)
+
+	return {x=x,y=y}
 end
 
 
@@ -91,7 +97,6 @@ local function on_chunk_generated(event)
 	local area = event.area
 
 	local x,y = getXY(area)
-
 	local arrayOfLuaEntity = surface.find_entities_filtered{area=area,type = "resource"}
 
 	if tableSize(arrayOfLuaEntity) > 0 then
@@ -100,6 +105,10 @@ local function on_chunk_generated(event)
 		updateGlobalForTile(surface,x,y,resourcesFound)
 
 		local players = game.forces['player']
+		local position = getXYCenterPosition(area)
+		surface.request_to_generate_chunks(position,1)
+
+
 		players.chart(surface,{area.left_top,area.left_top})
 	end
 
@@ -142,19 +151,19 @@ local function on_chunk_charted(event)
 	local force = event.force -- LuaForce
 
 	local surface = game.surfaces[surface_index]
-	local xc,yc = getXYCenter(area)
-
 	local resourceData = getGlobalData(surface,area)
+
 	if tableSize(resourceData) > 0 then
+		local position = getXYCenterPosition(area)
+
 		log(serpent.block( resourceData ))
+
+		force.add_chart_tag(surface,
+		{
+			position = position,
+			text = serpent.block( resourceData ),
+		})
 	end
-
-
-	force.add_chart_tag(surface,
-	{
-		position = {xc,yc},
-		text = "hiya",
-	})
 end
 
 

@@ -93,7 +93,7 @@ local function on_chunk_generated(event)
 		updateGlobalForTile(surface,x,y,resourcesFound)
 
 		local players = game.forces['player']
-		players.chart(surface,area)
+		players.chart(surface,{area.left_top,area.left_top})
 	end
 
 	if game.tick>120 and not global.printed then

@@ -9,6 +9,21 @@ local function sb(object)
 end
 
 
+local function format_number(input)
+	local number = util.format_number(input,true)
+
+	if string.match(number,"%d%d%d.%d[a-zA-Z]") then
+		number = number:sub(1,3) .. number:sub(6)
+
+	elseif string.match(number,"[2-9]%d.%d[a-zA-Z]") then
+		number = number:sub(1,2) .. number:sub(5)
+
+	end
+
+	return number
+end
+
+
 local function getResourceCounts(resources)
 	local resourcesFound = {}
 
@@ -236,11 +251,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		signalID.name = resource
 	end
 
-	local number = util.format_number(total,true)
-
-	if string.match(number,"%d%d%d.%d[a-zA-Z]") then
-		number = number:sub(1,3) .. number:sub(6)
-	end
+	local number = format_number(total)
 
 	local tag = force.add_chart_tag(surface,
 	{

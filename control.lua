@@ -127,8 +127,7 @@ script.on_event({
 
 
 
-local function getGlobalData(surface,area)
-	local x,y = getXY(area)
+local function getGlobalDataForChunkPosition(surface,x,y)
 	local surfaceData = global["resourceMap"][surface.name]
 	local data = {}
 
@@ -144,8 +143,24 @@ local function getGlobalData(surface,area)
 end
 
 
+local function getGlobalDataForArea(surface,area)
+	local x,y = getXY(area)
+
+	return getGlobalDataForChunkPosition(surface,x,y)
+end
+
+
 local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
-	log(serpent.block( chunkPosition ))
+	log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y )
+	for x=chunkPosition.x-1,chunkPosition.x+1 do
+		for y=chunkPosition.y-1,chunkPosition.y+1 do
+			local data = getGlobalDataForChunkPosition(surface, x, y)
+			if data and data[resource] then
+				log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
+			end
+		end
+	end
+	--log(serpent.block( getGlobalDataForChunkPosition(surface,chunkPosition.x, chunkPosition.y) ))
 end
 
 
@@ -156,42 +171,23 @@ local function on_chunk_charted(event)
 	local force = event.force -- LuaForce
 
 	local surface = game.surfaces[surface_index]
-	local resourceData = getGlobalData(surface,area)
+	local resourceData = getGlobalDataForArea(surface,area)
 
-	log(serpent.block( chunkPosition ))
-
-	local size = tableSize(resourceData)
-	if size > 0 then
-
-		--log(serpent.block( resourceData ))
-
-		local text = ""
-
-		if size==1 then
-			for resource, value in next,resourceData do
-				text = resource.. "   " .. value.amount
-			end
-		elseif size>1 then
-			for resource, value in pairs(resourceData) do
-				text = resource .. " & " .. text
-			end
-			text = text:sub(1, -4)
-		end
-
-		--log(text)
-
-		local position = getXYCenterPosition(area)
-		log(serpent.block( position ))
-		local tag = force.add_chart_tag(surface,
-		{
-			position = position,
-			text = text,
-		})
-
-		if tag==nil then
-			log("NIL TAG!")
-		end
+	for resource, value in pairs(resourceData) do
+		getNearbyChartedChunks(surface,force,chunkPosition,resource)
 	end
+
+--		local position = getXYCenterPosition(area)
+--		log(serpent.block( position ))
+--		local tag = force.add_chart_tag(surface,
+--		{
+--			position = position,
+--			text = text,
+--		})
+--
+--		if tag==nil then
+--			log("NIL TAG!")
+--		end
 end
 
 

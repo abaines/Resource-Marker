@@ -37,45 +37,51 @@ end
 
 
 local function printResourceMap()
-	for res,value1 in pairs(global["resourceMap"]) do
-		log("      " .. res)
-		for xx,value2 in pairs(value1) do
-			for yy,value3 in pairs(value2) do
-				log("         " .. xx..','..yy..','..value3)
+	for surface,value1 in pairs(global["resourceMap"]) do
+		for res,value2 in pairs(value1) do
+			log("      " .. res)
+			for xx,value3 in pairs(value2) do
+				for yy,value4 in pairs(value3) do
+					log("         " .. xx..','..yy..','..value4)
+				end
 			end
 		end
 	end
 end
 
 
-local function updateGlobal(name,x,y,amount)
+local function updateGlobal(surface,name,x,y,amount)
 	--log(name..','..x..','..y..','..amount)
 	if global["resourceMap"] == nil then
 		global["resourceMap"] = {}
 	end
 
-	if global["resourceMap"][name] == nil then
-		global["resourceMap"][name] = {}
+	if global["resourceMap"][surface.name] == nil then
+		global["resourceMap"][surface.name] = {}
 	end
 
-	if global["resourceMap"][name][x] == nil then
-		global["resourceMap"][name][x] = {}
+	if global["resourceMap"][surface.name][name] == nil then
+		global["resourceMap"][surface.name][name] = {}
 	end
 
-	global["resourceMap"][name][x][y] = amount
+	if global["resourceMap"][surface.name][name][x] == nil then
+		global["resourceMap"][surface.name][name][x] = {}
+	end
+
+	global["resourceMap"][surface.name][name][x][y] = amount
 end
 
 
-local function updateGlobalForTile(x,y,resourcesFound)
+local function updateGlobalForTile(surface,x,y,resourcesFound)
 	for name,amount in pairs(resourcesFound) do
-		updateGlobal(name,x,y,amount)
+		updateGlobal(surface,name,x,y,amount)
 	end
 end
 
 
 local function on_chunk_generated(event)
-	local area = event.area
 	local surface = event.surface
+	local area = event.area
 
 	local x,y = getXY(area)
 
@@ -84,11 +90,13 @@ local function on_chunk_generated(event)
 	if tableSize(arrayOfLuaEntity) > 0 then
 		local resourcesFound = getResourceCounts(arrayOfLuaEntity)
 
-		updateGlobalForTile(x,y,resourcesFound)
+		updateGlobalForTile(surface,x,y,resourcesFound)
+
+		local players = game.forces['player']
+		players.chart(surface,area)
 	end
 
 	if game.tick>120 and not global.printed then
-		--log(serpent.block( global.resourceMap ))
 		global.printed = true
 		printResourceMap()
 	end

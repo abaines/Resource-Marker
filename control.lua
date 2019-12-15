@@ -5,14 +5,6 @@ local function sb(object)
 	return serpent.block( object )
 end
 
-local function tableSize(someTable)
-	local count = 0
-	for _,_ in pairs(someTable) do
-		count = 1 + count
-	end
-	return count
-end
-
 
 local function getResourceCounts(resources)
 	local resourcesFound = {}
@@ -103,7 +95,7 @@ local function on_chunk_generated(event)
 	local x,y = getXY(area)
 	local arrayOfLuaEntity = surface.find_entities_filtered{area=area,type = "resource"}
 
-	if tableSize(arrayOfLuaEntity) > 0 then
+	if table_size(arrayOfLuaEntity) > 0 then
 		local resourcesFound = getResourceCounts(arrayOfLuaEntity)
 
 		updateGlobalResourceMapForTile(surface,x,y,resourcesFound)
@@ -187,13 +179,13 @@ local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 	local chunkPositions = getNearbyChartedChunks(surface,force,chunkPosition,resource)
 
 	for i=0,1000 do
-		local sizeStart = tableSize(chunkPositions)
+		local sizeStart = table_size(chunkPositions)
 
 		for key,value in pairs(chunkPositions) do
 			chunkPositions[key] = value
 		end
 
-		local sizeEnd = tableSize(chunkPositions)
+		local sizeEnd = table_size(chunkPositions)
 
 		if sizeStart == sizeEnd then
 			return chunkPositions

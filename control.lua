@@ -236,10 +236,16 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		signalID.name = resource
 	end
 
+	local number = util.format_number(total,true)
+
+	if string.match(number,"%d%d%d.%d[a-zA-Z]") then
+		number = number:sub(1,3) .. number:sub(6)
+	end
+
 	local tag = force.add_chart_tag(surface,
 	{
 		position = position,
-		text = util.format_number(total,true),
+		text = number,
 		icon = signalID,
 	})
 

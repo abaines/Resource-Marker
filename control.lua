@@ -211,11 +211,10 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local xCenter = 0
 	local yCenter = 0
 
-	log(resource)
 	for key,value in pairs(flood) do
 		local x,y = dekeyXY(key)
 		local amount = value.amount
-		log(x .. "   " .. y .. "   " .. amount)
+
 		total = amount + total
 		xCenter = x*amount + xCenter
 		yCenter = y*amount + yCenter
@@ -223,19 +222,20 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 
 	local x = xCenter/total
 	local y = yCenter/total
-	log(total .. "   " .. x .. "   " .. y)
+	log(resource .. "   " .. total .. "   " .. x .. "   " .. y)
 
+	local position = {x*32+16,y*32+16}
 
 	local tag = force.add_chart_tag(surface,
 	{
-		position = {x*32+16,y*32+16},
+		position = position,
 		text = total,
 	})
 
 	if tag==nil then
 		log("NIL TAG!")
 		game.print("NIL TAG!")
-		game.print(sb({x*32+16,y*32+16}))
+		game.print(sb(position))
 	end
 
 	for key,value in pairs(flood) do
@@ -260,18 +260,6 @@ local function on_chunk_charted(event)
 	for resource, value in pairs(resourceData) do
 		updateMapTags(surface,force,chunkPosition,resource)
 	end
-
---		local position = getXYCenterPosition(area)
---		log(serpent.block( position ))
---		local tag = force.add_chart_tag(surface,
---		{
---			position = position,
---			text = text,
---		})
---
---		if tag==nil then
---			log("NIL TAG!")
---		end
 end
 
 

@@ -174,7 +174,7 @@ local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 			if data and data[resource] and force.is_chunk_charted(surface,chunkPosition) then
 				--log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
 				--table.insert(chunkPositions,{x=x,y=y})
-				chunkPositions[getXYKey(x,y)] = true
+				chunkPositions[getXYKey(x,y)] = data[resource]
 			end
 		end
 	end
@@ -182,15 +182,15 @@ local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 	return chunkPositions
 end
 
-local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 
+local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 	local chunkPositions = getNearbyChartedChunks(surface,force,chunkPosition,resource)
 
 	for i=0,1000 do
 		local sizeStart = tableSize(chunkPositions)
 
 		for key,value in pairs(chunkPositions) do
-			chunkPositions[key] = true
+			chunkPositions[key] = value
 		end
 
 		local sizeEnd = tableSize(chunkPositions)
@@ -205,6 +205,30 @@ local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 end
 
 
+local function updateMapTags(surface,force,chunkPosition,resource)
+	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
+
+	local total = 0
+	local xCenter = 0
+	local yCenter = 0
+
+	log(resource)
+	for key,value in pairs(flood) do
+		local x,y = dekeyXY(key)
+		local amount = value.amount
+		log(x .. "   " .. y .. "   " .. amount)
+		total = amount + total
+		xCenter = x*amount + xCenter
+		yCenter = y*amount + yCenter
+	end
+	log(total)
+	log(xCenter/total .. "   " .. yCenter/total)
+
+
+
+end
+
+
 local function on_chunk_charted(event)
 	local surface_index = event.surface_index -- uint
 	local chunkPosition = event.position -- ChunkPosition
@@ -215,9 +239,7 @@ local function on_chunk_charted(event)
 	local resourceData = getGlobalDataForArea(surface,area)
 
 	for resource, value in pairs(resourceData) do
-		local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
-		log(resource)
-		log(sb(flood))
+		updateMapTags(surface,force,chunkPosition,resource)
 	end
 
 --		local position = getXYCenterPosition(area)

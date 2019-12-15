@@ -207,7 +207,6 @@ end
 
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
-
 	local total = 0
 	local xCenter = 0
 	local yCenter = 0
@@ -221,11 +220,31 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		xCenter = x*amount + xCenter
 		yCenter = y*amount + yCenter
 	end
-	log(total)
-	log(xCenter/total .. "   " .. yCenter/total)
+
+	local x = xCenter/total
+	local y = yCenter/total
+	log(total .. "   " .. x .. "   " .. y)
 
 
+	local tag = force.add_chart_tag(surface,
+	{
+		position = {x*32+16,y*32+16},
+		text = total,
+	})
 
+	if tag==nil then
+		log("NIL TAG!")
+		game.print("NIL TAG!")
+		game.print(sb({x*32+16,y*32+16}))
+	end
+
+	for key,value in pairs(flood) do
+		local oldTag = value.tag
+		if oldTag and oldTag.valid then
+			oldTag.destroy()
+		end
+		value.tag = tag
+	end
 end
 
 

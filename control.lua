@@ -107,3 +107,23 @@ script.on_event({
 	defines.events.on_chunk_generated,
 },on_chunk_generated)
 
+
+
+
+
+local function on_chunk_charted(event)
+	local surface_index = event.surface_index -- uint
+	local position = event.position -- ChunkPosition
+	local area = event.area -- BoundingBox: Area of the chunk.
+	local force = event.force -- LuaForce
+
+	local x,y = getXY(area)
+
+	log(x..","..y)
+end
+
+
+script.on_event({
+	defines.events.on_chunk_charted
+},on_chunk_charted)
+

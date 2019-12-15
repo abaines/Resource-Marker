@@ -241,6 +241,13 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local y = yCenter/total
 	local position = {x=x*32+16,y=y*32+16}
 
+	-- TODO: make setting
+	if total<1000 then
+		local msg = "below minimum size:" .. total .. "   resource:" .. resource .. "   x:" .. position.x .. "   y:" .. position.y
+		log(msg)
+		return
+	end
+
 	local signalID = {
 		type="virtual",
 		name="signal-dot",

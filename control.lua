@@ -226,6 +226,9 @@ local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 end
 
 
+-- lua global
+loggedMissingResources = {}
+
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 	local total = 0
@@ -260,6 +263,9 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	if global["iconTypes"][resource] then
 		signalID.type = global["iconTypes"][resource]
 		signalID.name = resource
+	elseif not loggedMissingResources[resource] then
+		log("missing icon: "..resource)
+		loggedMissingResources[resource] = true
 	end
 
 	local number = format_number(total)
@@ -312,16 +318,47 @@ script.on_event({
 
 local function calculateIconTypes()
 	global["iconTypes"] = {}
-	for k,v in pairs(game.virtual_signal_prototypes) do
-		global["iconTypes"][k] = "virtual"
+	for key,v in pairs(game.virtual_signal_prototypes) do
+		global["iconTypes"][key] = "virtual"
 	end
-	for k,v in pairs(game.item_prototypes) do
-		global["iconTypes"][k] = "item"
+	for key,v in pairs(game.item_prototypes) do
+		global["iconTypes"][key] = "item"
 	end
-	for k,v in pairs(game.fluid_prototypes) do
-		global["iconTypes"][k] = "fluid"
+	for key,v in pairs(game.fluid_prototypes) do
+		global["iconTypes"][key] = "fluid"
 	end
 	--log(sb( global["iconTypes"] ))
+
+	local resourcePrototypes = game.get_filtered_entity_prototypes( {{filter="type",type="resource"}} )
+	global["resource prototypes"] = {}
+
+	for name,value in pairs(resourcePrototypes) do
+		local products = value.mineable_properties.products
+		if table_size(products)==1 and products[1].name == name then
+			--skip
+		else
+			--global["resource prototypes"][name] = {}
+
+			table.sort(products, function(a,b) return a.probability<b.probability end)
+
+			log(sb( products ))
+
+			for _,product in pairs(products) do
+				--table.insert(global["resource prototypes"][name],
+				--	{
+				--		amount=product.amount,
+				--		name=product.name,
+				--		probability=product.probability,
+				--	}
+				--)
+				if global["iconTypes"][product.name] then
+					global["resource prototypes"][name] = product.name
+				end
+			end
+		end
+	end
+
+	log(sb( global["resource prototypes"] ))
 end
 
 

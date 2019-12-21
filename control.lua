@@ -118,12 +118,17 @@ local function on_chunk_generated(event)
 
 		updateGlobalResourceMapForTile(surface,x,y,resourcesFound)
 
-		local players = game.forces['player']
-		local position = getXYCenterPosition(area)
-		surface.request_to_generate_chunks(position,1)
+		local generate_adjacent_chunks = settings.global["resourcemarker-generate-adjacent-chunks"].value
+		if generate_adjacent_chunks then
+			local position = getXYCenterPosition(area)
+			surface.request_to_generate_chunks(position,1)
+		end
 
-
-		players.chart(surface,{area.left_top,area.left_top})
+		local chart_resource_chunks = settings.global["resourcemarker-chart-resource-chunks"].value
+		if chart_resource_chunks then
+			local players = game.forces['player']
+			players.chart(surface,{area.left_top,area.left_top})
+		end
 	end
 
 	if game.tick>120 and not global.printed then
@@ -183,7 +188,6 @@ local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 			local data = getGlobalDataForChunkPosition(surface, x, y)
 			if data and data[resource] and force.is_chunk_charted(surface,chunkPosition) then
 				--log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
-				--table.insert(chunkPositions,{x=x,y=y})
 				chunkPositions[getXYKey(x,y)] = data[resource]
 			end
 		end
@@ -241,8 +245,8 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local y = yCenter/total
 	local position = {x=x*32+16,y=y*32+16}
 
-	-- TODO: make setting
-	if total<1000 then
+	local minimum_size = settings.global["resourcemarker-minimum-size"].value
+	if total<minimum_size then
 		local msg = "below minimum size:" .. total .. "   resource:" .. resource .. "   x:" .. position.x .. "   y:" .. position.y
 		log(msg)
 		return
@@ -320,5 +324,17 @@ local function calculateIconTypes()
 	--log(sb( global["iconTypes"] ))
 end
 
-script.on_init(calculateIconTypes)
+
+local function onInit()
+	calculateIconTypes()
+
+	local chart_resource_chunks = settings.global["resourcemarker-starting-radius-to-generate"].value
+	local surface = game.surfaces["nauvis"]
+	for r=0,chart_resource_chunks do
+		surface.request_to_generate_chunks({0,0},r)
+	end
+	log("generating:" .. chart_resource_chunks)
+end
+
+script.on_init(onInit)
 

@@ -260,12 +260,14 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		name="signal-dot",
 	}
 
-	if global["iconTypes"][resource] then
-		signalID.type = global["iconTypes"][resource]
-		signalID.name = resource
-	elseif not loggedMissingResources[resource] then
-		log("missing icon: "..resource)
-		loggedMissingResources[resource] = true
+	local resourceIcon = global.aliases[resource] or resource
+
+	if global["iconTypes"][resourceIcon] then
+		signalID.type = global["iconTypes"][resourceIcon]
+		signalID.name = resourceIcon
+	elseif not loggedMissingResources[resourceIcon] then
+		log("missing icon: "..resourceIcon)
+		loggedMissingResources[resourceIcon] = true
 	end
 
 	local number = format_number(total)
@@ -317,6 +319,7 @@ script.on_event({
 
 
 local function calculateIconTypes()
+	-- global.iconTypes
 	global["iconTypes"] = {}
 	for key,v in pairs(game.virtual_signal_prototypes) do
 		global["iconTypes"][key] = "virtual"
@@ -329,36 +332,27 @@ local function calculateIconTypes()
 	end
 	--log(sb( global["iconTypes"] ))
 
+	-- global.aliases
 	local resourcePrototypes = game.get_filtered_entity_prototypes( {{filter="type",type="resource"}} )
-	global["resource prototypes"] = {}
+	global.aliases = {}
 
 	for name,value in pairs(resourcePrototypes) do
 		local products = value.mineable_properties.products
 		if table_size(products)==1 and products[1].name == name then
 			--skip
 		else
-			--global["resource prototypes"][name] = {}
-
 			table.sort(products, function(a,b) return a.probability<b.probability end)
-
-			log(sb( products ))
+			--log(sb( products ))
 
 			for _,product in pairs(products) do
-				--table.insert(global["resource prototypes"][name],
-				--	{
-				--		amount=product.amount,
-				--		name=product.name,
-				--		probability=product.probability,
-				--	}
-				--)
 				if global["iconTypes"][product.name] then
-					global["resource prototypes"][name] = product.name
+					global.aliases[name] = product.name
 				end
 			end
 		end
 	end
 
-	log(sb( global["resource prototypes"] ))
+	log(sb( global.aliases ))
 end
 
 

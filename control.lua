@@ -77,8 +77,7 @@ local function printResourceMap()
 end
 
 
-local function updateGlobalResourceMap(surface,name,x,y,amount)
-	--log(name..','..x..','..y..','..amount)
+local function updateGlobalResourceSurface(surface)
 	if global["resourceMap"] == nil then
 		global["resourceMap"] = {}
 	end
@@ -86,6 +85,12 @@ local function updateGlobalResourceMap(surface,name,x,y,amount)
 	if global["resourceMap"][surface.name] == nil then
 		global["resourceMap"][surface.name] = {}
 	end
+end
+
+
+local function updateGlobalResourceMap(surface,name,x,y,amount)
+	--log(name..','..x..','..y..','..amount)
+	updateGlobalResourceSurface(surface)
 
 	if global["resourceMap"][surface.name][name] == nil then
 		global["resourceMap"][surface.name][name] = {}
@@ -157,6 +162,7 @@ end
 
 
 local function getGlobalDataForChunkPosition(surface,x,y)
+	updateGlobalResourceSurface(surface)
 	local surfaceData = global["resourceMap"][surface.name]
 	local data = {}
 

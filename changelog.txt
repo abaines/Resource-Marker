@@ -3,6 +3,7 @@ Version: 0.2.2
 Date: 2019.12.20
   Changes:
     - Support for modded ores/resources/fluids
+    - Bug fix
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2019.12.14

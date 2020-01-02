@@ -136,7 +136,7 @@ local function on_chunk_generated(event)
 		end
 	end
 
-	if game.tick>120 and not global.printed then
+	if false and game.tick>120 and not global.printed then
 		global.printed = true
 		printResourceMap()
 	end
@@ -358,7 +358,7 @@ local function calculateIconTypes()
 		end
 	end
 
-	log(sb( global.aliases ))
+	--log(sb( global.aliases ))
 end
 
 
@@ -370,7 +370,7 @@ local function onInit()
 	for r=0,chart_resource_chunks do
 		surface.request_to_generate_chunks({0,0},r)
 	end
-	log("generating:" .. chart_resource_chunks)
+	log("resourcemarker-starting-radius-to-generate: " .. chart_resource_chunks)
 end
 
 script.on_init(onInit)

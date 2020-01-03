@@ -111,10 +111,7 @@ local function updateGlobalResourceMapForTile(surface,x,y,resourcesFound)
 end
 
 
-local function on_chunk_generated(event)
-	local surface = event.surface
-	local area = event.area
-
+local function _on_chunk_generated(surface,area)
 	local x,y = getXY(area)
 	local arrayOfLuaEntity = surface.find_entities_filtered{area=area,type = "resource"}
 
@@ -140,6 +137,12 @@ local function on_chunk_generated(event)
 		global.printed = true
 		printResourceMap()
 	end
+end
+
+local function on_chunk_generated(event)
+	local surface = event.surface
+	local area = event.area
+	_on_chunk_generated(surface,area)
 end
 
 

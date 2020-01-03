@@ -368,10 +368,6 @@ local function onInit()
 	local chart_resource_chunks = settings.global["resourcemarker-starting-radius-to-generate"].value
 
 	for _, surface in pairs(game.surfaces) do
-		for r=0,chart_resource_chunks do
-			surface.request_to_generate_chunks({0,0},r)
-		end
-
 		for chunk in surface.get_chunks() do
 			local x,y = chunk.x,chunk.y
 			local event = {}
@@ -386,6 +382,10 @@ local function onInit()
 					_on_chunk_charted(surface,force,chunkPosition,chunk.area)
 				end
 			end
+		end
+
+		for r=0,chart_resource_chunks do
+			surface.request_to_generate_chunks({0,0},r)
 		end
 	end
 

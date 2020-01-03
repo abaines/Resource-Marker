@@ -300,6 +300,14 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 end
 
 
+local function _on_chunk_charted(surface,force,chunkPosition,area)
+	local resourceData = getGlobalDataForArea(surface,area)
+
+	for resource, value in pairs(resourceData) do
+		updateMapTags(surface,force,chunkPosition,resource)
+	end
+end
+
 local function on_chunk_charted(event)
 	local surface_index = event.surface_index -- uint
 	local chunkPosition = event.position -- ChunkPosition
@@ -307,11 +315,7 @@ local function on_chunk_charted(event)
 	local force = event.force -- LuaForce
 
 	local surface = game.surfaces[surface_index]
-	local resourceData = getGlobalDataForArea(surface,area)
-
-	for resource, value in pairs(resourceData) do
-		updateMapTags(surface,force,chunkPosition,resource)
-	end
+	_on_chunk_charted(surface,force,chunkPosition,area)
 end
 
 

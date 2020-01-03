@@ -397,3 +397,16 @@ end
 
 script.on_init(onInit)
 
+
+
+local function chart_generated_chunks(event)
+	local player = game.players[event.player_index]
+	for _, surface in pairs(game.surfaces) do
+		for chunk in surface.get_chunks() do
+			player.force.chart(surface,chunk.area)
+		end
+	end
+end
+
+commands.add_command("chart-generated-chunks","",chart_generated_chunks)
+

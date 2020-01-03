@@ -22,7 +22,7 @@ data:extend({
 	{
 		type = "int-setting",
 		name = "resourcemarker-starting-radius-to-generate",
-		default_value = 60,
+		default_value = 75,
 		minimum_value = 0,
 		setting_type = "runtime-global",
 	},

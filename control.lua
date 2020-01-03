@@ -143,9 +143,7 @@ local function on_chunk_generated(event)
 end
 
 
-script.on_event({
-	defines.events.on_chunk_generated,
-},on_chunk_generated)
+script.on_event({defines.events.on_chunk_generated,},on_chunk_generated)
 
 
 
@@ -317,9 +315,7 @@ local function on_chunk_charted(event)
 end
 
 
-script.on_event({
-	defines.events.on_chunk_charted
-},on_chunk_charted)
+script.on_event({defines.events.on_chunk_charted},on_chunk_charted)
 
 
 

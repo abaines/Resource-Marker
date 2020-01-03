@@ -304,6 +304,8 @@ end
 
 
 local function _on_chunk_charted(surface,force,chunkPosition,area)
+	_on_chunk_generated(surface,area)
+
 	local resourceData = getGlobalDataForArea(surface,area)
 
 	for resource, value in pairs(resourceData) do

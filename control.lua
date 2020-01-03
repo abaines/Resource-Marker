@@ -4,9 +4,7 @@
 local util = require("util")
 
 
-local function sb(object)
-	return serpent.block( object )
-end
+local sb = serpent.block
 
 
 local function format_number(input)

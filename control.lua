@@ -123,7 +123,9 @@ local function _on_chunk_generated(surface,area)
 		local generate_adjacent_chunks = settings.global["resourcemarker-generate-adjacent-chunks"].value
 		if generate_adjacent_chunks then
 			local position = getXYCenterPosition(area)
+			surface.request_to_generate_chunks(position,0)
 			surface.request_to_generate_chunks(position,1)
+			surface.request_to_generate_chunks(position,2)
 		end
 
 		local chart_resource_chunks = settings.global["resourcemarker-chart-resource-chunks"].value

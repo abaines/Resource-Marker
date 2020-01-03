@@ -366,10 +366,29 @@ local function onInit()
 	calculateIconTypes()
 
 	local chart_resource_chunks = settings.global["resourcemarker-starting-radius-to-generate"].value
-	local surface = game.surfaces["nauvis"]
-	for r=0,chart_resource_chunks do
-		surface.request_to_generate_chunks({0,0},r)
+
+	for _, surface in pairs(game.surfaces) do
+		for r=0,chart_resource_chunks do
+			surface.request_to_generate_chunks({0,0},r)
+		end
+
+		for chunk in surface.get_chunks() do
+			local x,y = chunk.x,chunk.y
+			local event = {}
+			event.surface=surface
+			event.area=chunk.area
+
+			on_chunk_generated(event)
+
+			for _,force in pairs(game.forces) do
+				if force.is_chunk_charted(surface,{x,y}) then
+					local chunkPosition = {x=x,y=y}
+					_on_chunk_charted(surface,force,chunkPosition,chunk.area)
+				end
+			end
+		end
 	end
+
 	log("resourcemarker-starting-radius-to-generate: " .. chart_resource_chunks)
 end
 

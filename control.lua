@@ -278,12 +278,13 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 
 	local number = format_number(total)
 
-	local tag = force.add_chart_tag(surface,
-	{
+	local tagData = {
 		position = position,
 		text = number,
 		icon = signalID,
-	})
+	}
+
+	local tag = force.add_chart_tag(surface,tagData)
 
 	if tag==nil then
 		local warning = "NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
@@ -298,6 +299,8 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 			end
 			value.tag = tag
 		end
+		local msg = string.gsub(sb(tagData),"%s+"," ")
+		log(msg)
 	end
 end
 

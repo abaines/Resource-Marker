@@ -178,13 +178,6 @@ local function getGlobalDataForChunkPosition(surface,x,y)
 end
 
 
-local function getGlobalDataForArea(surface,area)
-	local x,y = getXY(area)
-
-	return getGlobalDataForChunkPosition(surface,x,y)
-end
-
-
 local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 	--log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y)
 	local chunkPositions = {}
@@ -308,7 +301,9 @@ end
 local function _on_chunk_charted(surface,force,chunkPosition,area)
 	_on_chunk_generated(surface,area)
 
-	local resourceData = getGlobalDataForArea(surface,area)
+	local resourceData = getGlobalDataForChunkPosition(surface,getXY(area))
+
+	log("#"..string.gsub(sb(resourceData),"%s+"," "))
 
 	for resource, value in pairs(resourceData) do
 		updateMapTags(surface,force,chunkPosition,resource)
@@ -416,4 +411,8 @@ local function chart_generated_chunks(event)
 end
 
 commands.add_command("chart-generated-chunks","",chart_generated_chunks)
+
+
+-- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )
+-- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) for _,i in pairs(t) do i.destroy() end
 

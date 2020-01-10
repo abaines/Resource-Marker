@@ -86,19 +86,19 @@ local function updateGlobalResourceSurface(surface)
 end
 
 
-local function updateGlobalResourceMap(surface,name,x,y,amount)
-	--log(name..','..x..','..y..','..amount)
+local function updateGlobalResourceMap(surface,resourceName,x,y,amount)
+	--log(resourceName..','..x..','..y..','..amount)
 	updateGlobalResourceSurface(surface)
 
-	if global["resourceMap"][surface.name][name] == nil then
-		global["resourceMap"][surface.name][name] = {}
+	if global["resourceMap"][surface.name][resourceName] == nil then
+		global["resourceMap"][surface.name][resourceName] = {}
 	end
 
-	if global["resourceMap"][surface.name][name][x] == nil then
-		global["resourceMap"][surface.name][name][x] = {}
+	if global["resourceMap"][surface.name][resourceName][x] == nil then
+		global["resourceMap"][surface.name][resourceName][x] = {}
 	end
 
-	global["resourceMap"][surface.name][name][x][y] = { amount = amount }
+	global["resourceMap"][surface.name][resourceName][x][y] = { amount = amount }
 end
 
 

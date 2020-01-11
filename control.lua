@@ -60,22 +60,7 @@ local function getXYCenterPosition(area)
 end
 
 
-local function printResourceMap()
-	for surface,value1 in pairs(global["resourceMap"]) do
-		log("   " .. surface)
-		for res,value2 in pairs(value1) do
-			log("      " .. res)
-			for xx,value3 in pairs(value2) do
-				for yy,value4 in pairs(value3) do
-					log("         " .. xx..','..yy..','..value4.amount)
-				end
-			end
-		end
-	end
-end
-
-
-local function updateGlobalResourceSurface(surface)
+local function getGlobalMapLocationData(surface,x,y)
 	if global["resourceMap"] == nil then
 		global["resourceMap"] = {}
 	end
@@ -83,22 +68,24 @@ local function updateGlobalResourceSurface(surface)
 	if global["resourceMap"][surface.name] == nil then
 		global["resourceMap"][surface.name] = {}
 	end
+
+	if global["resourceMap"][surface.name][x] == nil then
+		global["resourceMap"][surface.name][x] = {}
+	end
+
+	if global["resourceMap"][surface.name][x][y] == nil then
+		global["resourceMap"][surface.name][x][y] = {}
+	end
+
+	return global["resourceMap"][surface.name][x][y]
 end
 
 
 local function updateGlobalResourceMap(surface,resourceName,x,y,amount)
 	--log(resourceName..','..x..','..y..','..amount)
-	updateGlobalResourceSurface(surface)
+	local locData = getGlobalMapLocationData(surface,x,y)
 
-	if global["resourceMap"][surface.name][resourceName] == nil then
-		global["resourceMap"][surface.name][resourceName] = {}
-	end
-
-	if global["resourceMap"][surface.name][resourceName][x] == nil then
-		global["resourceMap"][surface.name][resourceName][x] = {}
-	end
-
-	global["resourceMap"][surface.name][resourceName][x][y] = { amount = amount }
+	locData[resourceName] = { amount = amount }
 end
 
 
@@ -131,11 +118,6 @@ local function _on_chunk_generated(surface,area)
 			players.chart(surface,{area.left_top,area.left_top})
 		end
 	end
-
-	if false and game.tick>120 and not global.printed then
-		global.printed = true
-		printResourceMap()
-	end
 end
 
 local function on_chunk_generated(event)
@@ -161,22 +143,6 @@ local function dekeyXY(key)
 end
 
 
-local function getGlobalDataForChunkPosition(surface,x,y)
-	updateGlobalResourceSurface(surface)
-	local surfaceData = global["resourceMap"][surface.name]
-	local data = {}
-
-	for resource,value in pairs(surfaceData) do
-		if value and value[x] and value[x][y] then
-			local amount = value[x][y]
-			--log(resource .. "   " .. amount )
-			data[resource] = amount
-		end
-	end
-
-	return data
-end
-
 
 local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 	--log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y)
@@ -184,7 +150,7 @@ local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 
 	for x=chunkPosition.x-1,chunkPosition.x+1 do
 		for y=chunkPosition.y-1,chunkPosition.y+1 do
-			local data = getGlobalDataForChunkPosition(surface, x, y)
+			local data = getGlobalMapLocationData(surface, x, y)
 			if data and data[resource] and force.is_chunk_charted(surface,chunkPosition) then
 				--log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
 				chunkPositions[getXYKey(x,y)] = data[resource]
@@ -301,7 +267,7 @@ end
 local function _on_chunk_charted(surface,force,chunkPosition,area)
 	_on_chunk_generated(surface,area)
 
-	local resourceData = getGlobalDataForChunkPosition(surface,getXY(area))
+	local resourceData = getGlobalMapLocationData(surface,getXY(area))
 
 	log("#"..string.gsub(sb(resourceData),"%s+"," "))
 
@@ -338,9 +304,8 @@ local function calculateIconTypes()
 	for key,v in pairs(game.fluid_prototypes) do
 		global["iconTypes"][key] = "fluid"
 	end
-	--log(sb( global["iconTypes"] ))
 
-	-- global.aliases
+
 	local resourcePrototypes = game.get_filtered_entity_prototypes( {{filter="type",type="resource"}} )
 	global.aliases = {}
 
@@ -359,8 +324,6 @@ local function calculateIconTypes()
 			end
 		end
 	end
-
-	--log(sb( global.aliases ))
 end
 
 

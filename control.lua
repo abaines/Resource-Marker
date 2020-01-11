@@ -92,8 +92,13 @@ end
 local function updateGlobalResourceMap(surface,resourceName,x,y,amount)
 	--log(resourceName..','..x..','..y..','..amount)
 	local locData = getGlobalMapLocationData(surface,x,y)
+	local amt = -math.huge
 
-	locData.resources[resourceName] = { amount = amount }
+	if locData[resourceName] and locData[resourceName].amount then
+		amt = locData.resources[resourceName].amount
+	end
+
+	locData.resources[resourceName] = { amount = math.max(amt,amount) }
 end
 
 
@@ -276,12 +281,18 @@ local function _on_chunk_charted(surface,force,chunkPosition,area)
 	_on_chunk_generated(surface,area)
 
 	local resourceData = getGlobalMapLocationData(surface,getXY(area))
+	local charted = resourceData.forces[force.name]
+	log((charted and "-" or "#").." "..string.gsub(sb(resourceData),"%s+"," "))
 
-	log("# "..string.gsub(sb(resourceData),"%s+"," "))
+	if charted then
+		return
+	end
 
 	for resource, value in pairs(resourceData.resources) do
 		updateMapTags(surface,force,chunkPosition,resource)
 	end
+
+	resourceData.forces[force.name] = game.tick
 end
 
 local function on_chunk_charted(event)

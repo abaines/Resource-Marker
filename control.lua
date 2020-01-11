@@ -206,6 +206,7 @@ end
 
 -- lua global
 loggedMissingResources = {}
+lastLoggedTagCount = {}
 
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
@@ -272,7 +273,14 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 			value.tag = tag
 		end
 
-		log("& "..string.gsub(sb(tagData),"%s+"," "))
+		local tagCount = #force.find_chart_tags(surface)
+		local lltcKey = surface.name.."^"..force.name
+
+		if lastLoggedTagCount[lltcKey]==nil or tagCount>lastLoggedTagCount[lltcKey] then
+			log(#force.find_chart_tags(surface).." & "..string.gsub(sb(tagData),"%s+"," "))
+		end
+
+		lastLoggedTagCount[lltcKey] = tagCount
 	end
 end
 
@@ -282,11 +290,13 @@ local function _on_chunk_charted(surface,force,chunkPosition,area)
 
 	local resourceData = getGlobalMapLocationData(surface,getXY(area))
 	local charted = resourceData.forces[force.name]
-	log((charted and "-" or "#").." "..string.gsub(sb(resourceData),"%s+"," "))
 
 	if charted then
+		--log("- "..string.gsub(sb(resourceData),"%s+"," "))
 		return
 	end
+
+	--log("# "..string.gsub(sb(resourceData),"%s+"," "))
 
 	for resource, value in pairs(resourceData.resources) do
 		updateMapTags(surface,force,chunkPosition,resource)

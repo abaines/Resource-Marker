@@ -405,6 +405,31 @@ end
 commands.add_command("chart-generated-chunks","",chart_generated_chunks)
 
 
+
+local function reset_map_tags_and_data(event)
+	local player = game.players[event.player_index]
+	local force = player.force
+
+	global["resourceMap"] = {}
+	loggedMissingResources = {}
+	lastLoggedTagCount = {}
+
+	for _, surface in pairs(game.surfaces) do
+		for _,tag in pairs(force.find_chart_tags(surface)) do
+			tag.destroy()
+		end
+		for chunk in surface.get_chunks() do
+			local chunkPosition = {x=chunk.x,y=chunk.y}
+			if force.is_chunk_charted(surface,chunkPosition) then
+				_on_chunk_charted(surface,force,chunkPosition,chunk.area)
+			end
+		end
+	end
+end
+
+commands.add_command("reset-map-tags-and-data","",reset_map_tags_and_data)
+
+
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) for _,i in pairs(t) do i.destroy() end
 

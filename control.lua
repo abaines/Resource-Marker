@@ -77,6 +77,14 @@ local function getGlobalMapLocationData(surface,x,y)
 		global["resourceMap"][surface.name][x][y] = {}
 	end
 
+	if global["resourceMap"][surface.name][x][y].resources == nil then
+		global["resourceMap"][surface.name][x][y].resources = {}
+	end
+
+	if global["resourceMap"][surface.name][x][y].forces == nil then
+		global["resourceMap"][surface.name][x][y].forces = {}
+	end
+
 	return global["resourceMap"][surface.name][x][y]
 end
 
@@ -85,7 +93,7 @@ local function updateGlobalResourceMap(surface,resourceName,x,y,amount)
 	--log(resourceName..','..x..','..y..','..amount)
 	local locData = getGlobalMapLocationData(surface,x,y)
 
-	locData[resourceName] = { amount = amount }
+	locData.resources[resourceName] = { amount = amount }
 end
 
 
@@ -151,9 +159,9 @@ local function getNearbyChartedChunks(surface,force,chunkPosition,resource)
 	for x=chunkPosition.x-1,chunkPosition.x+1 do
 		for y=chunkPosition.y-1,chunkPosition.y+1 do
 			local data = getGlobalMapLocationData(surface, x, y)
-			if data and data[resource] and force.is_chunk_charted(surface,chunkPosition) then
-				--log("   " .. x .. "   " .. y .. "   " .. data[resource].amount)
-				chunkPositions[getXYKey(x,y)] = data[resource]
+			if data.resources[resource] and force.is_chunk_charted(surface,chunkPosition) then
+				--log("   " .. x .. "   " .. y .. "   " .. data.resources[resource].amount)
+				chunkPositions[getXYKey(x,y)] = data.resources[resource]
 			end
 		end
 	end
@@ -258,8 +266,8 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 			end
 			value.tag = tag
 		end
-		local msg = string.gsub(sb(tagData),"%s+"," ")
-		log(msg)
+
+		log("& "..string.gsub(sb(tagData),"%s+"," "))
 	end
 end
 
@@ -269,9 +277,9 @@ local function _on_chunk_charted(surface,force,chunkPosition,area)
 
 	local resourceData = getGlobalMapLocationData(surface,getXY(area))
 
-	log("#"..string.gsub(sb(resourceData),"%s+"," "))
+	log("# "..string.gsub(sb(resourceData),"%s+"," "))
 
-	for resource, value in pairs(resourceData) do
+	for resource, value in pairs(resourceData.resources) do
 		updateMapTags(surface,force,chunkPosition,resource)
 	end
 end

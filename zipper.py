@@ -43,6 +43,7 @@ whitelist=[
 "\\info.json",
 "\\license.md",
 "\\thumbnail.png",
+"\\description.json",
 ]
 
 whitelistextensionsinsidefolders=[
@@ -97,13 +98,13 @@ def printWhiteListFiles(root):
    print("")
    print(root)
    r,i = collectWhiteListFiles(root,whitelist,whitelistextensions,whitelistextensionsinsidefolders)
-   
+
    if len(i)>0:
       print ('{:-^80}'.format(' ignored '))
       for f in i:
          print(f)
       print(setExtensions(i))
-      
+
    print ('{:=^80}'.format(' white '))
    for f in r:
       print(f)

@@ -205,8 +205,8 @@ end
 
 
 -- lua global
-loggedMissingResources = {}
-lastLoggedTagCount = {}
+local loggedMissingResources = {}
+local lastLoggedTagCount = {}
 
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
@@ -298,7 +298,7 @@ local function _on_chunk_charted(surface,force,chunkPosition,area)
 
 	--log("# "..string.gsub(sb(resourceData),"%s+"," "))
 
-	for resource, value in pairs(resourceData.resources) do
+	for resource, _ in pairs(resourceData.resources) do
 		updateMapTags(surface,force,chunkPosition,resource)
 	end
 
@@ -324,13 +324,13 @@ script.on_event({defines.events.on_chunk_charted},on_chunk_charted)
 local function calculateIconTypes()
 	-- global.iconTypes
 	global["iconTypes"] = {}
-	for key,v in pairs(game.virtual_signal_prototypes) do
+	for key,_ in pairs(game.virtual_signal_prototypes) do
 		global["iconTypes"][key] = "virtual"
 	end
-	for key,v in pairs(game.item_prototypes) do
+	for key,_ in pairs(game.item_prototypes) do
 		global["iconTypes"][key] = "item"
 	end
-	for key,v in pairs(game.fluid_prototypes) do
+	for key,_ in pairs(game.fluid_prototypes) do
 		global["iconTypes"][key] = "fluid"
 	end
 
@@ -340,7 +340,7 @@ local function calculateIconTypes()
 
 	for name,value in pairs(resourcePrototypes) do
 		local products = value.mineable_properties.products
-		if table_size(products)==1 and products[1].name == name then
+		if table_size(products)==1 and products[1].name == name then -- luacheck: ignore 542
 			--skip
 		else
 			table.sort(products, function(a,b) return a.probability<b.probability end)

@@ -17,7 +17,7 @@ import json
 
 def get_mod_name():
    with open('info.json') as info_json:
-      data = json.load(info_json)  
+      data = json.load(info_json)
       name = data['name']
       version = data['version']
       n_v = name+'_'+version
@@ -82,7 +82,7 @@ def collectWhiteListFiles(root,whitelist,whitelistextensions,whitelistextensions
 
    for file in getAllFiles(root):
       shortname = file[len(root):]
-      c = shortname.count('\\')
+      c = shortname.count(os.sep)
       if endsWithAny(file,whitelist):
          returns.append(shortname)
       elif endsWithAny(file,whitelistextensions):

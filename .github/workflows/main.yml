@@ -19,3 +19,23 @@ jobs:
     - name: Factorio Mod luacheck
       uses: Roang-zero1/factorio-mod-luacheck@v1.1.0
 
+    - uses: actions/setup-python@v1
+
+    - name: Check Python and OS Setup
+      run: |
+        python -c "import sys; print(sys.version);"
+        python -c "import os; print(os.getcwd()); print(os.listdir(os.curdir));"
+
+    - run: |
+        python zipper.py
+
+    - name: Calculate Artifact File Name
+      id: getfilename
+      run: echo "::set-output name=file::$(ls ../*.zip)"
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: artifact
+        path: ${{ steps.getfilename.outputs.file }}
+

@@ -5,7 +5,6 @@ import os
 import threading
 import hashlib
 import shutil
-import winsound
 import time
 import glob
 import re
@@ -14,18 +13,27 @@ import datetime
 import tempfile
 import sys
 import traceback
+import json
+
+def get_mod_name():
+   with open('info.json') as info_json:
+      data = json.load(info_json)  
+      name = data['name']
+      version = data['version']
+      n_v = name+'_'+version
+      return n_v
 
 rootx = os.path.dirname(os.path.abspath(__file__))
-print( rootx )
+print( 'rootx', rootx )
 
-baseFolder = rootx[:rootx.rindex('\\')+1]
-print( baseFolder )
+baseFolder = rootx[:rootx.rindex(os.sep)+1]
+print( 'baseFolder', baseFolder )
 
-rootName = rootx[rootx.rindex('\\')+1:]
-print( rootName )
+rootName = get_mod_name()
+print( 'rootName', rootName )
 
 zipPath = os.path.join(baseFolder,rootName+".zip")
-print( zipPath )
+print( 'zipPath', zipPath )
 
 if os.path.exists(zipPath):
    os.remove(zipPath)
@@ -38,12 +46,12 @@ whitelistextensions=[
 ]
 
 whitelist=[
-"\\README.md",
-"\\changelog.txt",
-"\\info.json",
-"\\license.md",
-"\\thumbnail.png",
-"\\description.json",
+os.sep+"README.md",
+os.sep+"changelog.txt",
+os.sep+"info.json",
+os.sep+"license.md",
+os.sep+"thumbnail.png",
+os.sep+"description.json",
 ]
 
 whitelistextensionsinsidefolders=[
@@ -66,6 +74,8 @@ def endsWithAny(text,collection):
          return c
    return False
 
+git_directory_flag = os.sep+'.git'+os.sep
+
 def collectWhiteListFiles(root,whitelist,whitelistextensions,whitelistextensionsinsidefolders):
    returns = []
    ignored = []
@@ -79,7 +89,7 @@ def collectWhiteListFiles(root,whitelist,whitelistextensions,whitelistextensions
          returns.append(shortname)
       elif c >= 2 and endsWithAny(file,whitelistextensionsinsidefolders):
          returns.append(shortname)
-      elif '\\.git\\' in file:
+      elif git_directory_flag in file:
          pass
       else:
          ignored.append(shortname)
@@ -96,7 +106,7 @@ def setExtensions(listFiles):
 
 def printWhiteListFiles(root):
    print("")
-   print(root)
+   print('printWhiteListFiles','root',root)
    r,i = collectWhiteListFiles(root,whitelist,whitelistextensions,whitelistextensionsinsidefolders)
 
    if len(i)>0:
@@ -121,7 +131,15 @@ with zipfile.ZipFile(zipPath, 'w') as zout:
    for f in r:
       arcname=rootName+f
       filename="."+f
-      print(filename)
-      zout.write(filename,arcname=arcname)
+      print(filename,arcname)
+      zout.write(filename,arcname)
 
-input("Press Enter to continue...")
+
+# check os.name to determine interactive mode
+if os.name == 'nt':
+   input("Press Enter to continue...")
+elif os.name == 'posix':
+   print( os.listdir(os.pardir) )
+else:
+   raise Exception("unknown os.name",os.name)
+

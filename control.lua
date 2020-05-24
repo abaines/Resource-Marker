@@ -359,11 +359,16 @@ end
 local function generateStaringArea(chunkRadius)
 	log("generateStaringArea: " .. chunkRadius)
 
-	for _, surface in pairs(game.surfaces) do
-		for r=0,chunkRadius do
-			surface.request_to_generate_chunks({0,0},r)
+	local requests = 0
+
+	for radius=0,chunkRadius do
+		for _, surface in pairs(game.surfaces) do
+			surface.request_to_generate_chunks({0,0},radius)
+			requests = 1 + requests
 		end
 	end
+
+	log("request_to_generate_chunks: " .. requests)
 end
 
 local function parseGenerateStaringAreaCommand(commandData)

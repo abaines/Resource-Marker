@@ -356,10 +356,43 @@ local function calculateIconTypes()
 end
 
 
+local function generateStaringArea(chunkRadius)
+	log("generateStaringArea: " .. chunkRadius)
+
+	for _, surface in pairs(game.surfaces) do
+		for r=0,chunkRadius do
+			surface.request_to_generate_chunks({0,0},r)
+		end
+	end
+end
+
+local function parseGenerateStaringAreaCommand(commandData)
+	local player = game.players[commandData.player_index]
+	local parameter = commandData.parameter
+	local tick = commandData.tick
+
+	local radius = tonumber(parameter)
+
+	if radius then
+		if radius == math.floor(radius) then
+			generateStaringArea(radius)
+			local msg = "Generating Starting Area Chunks: " .. radius
+			log(msg)
+			game.print(msg, {r=0.0, g=0.9, b=0.4})
+			return
+		end
+	end
+
+	local msg = "Must provide integer radius to generate: " .. parameter
+	log(msg)
+	player.print(msg, {r=0.9, g=0.2, b=0.0})
+end
+
+commands.add_command("generate-chunks","Generate chunks around starting area (in chunk radius).",parseGenerateStaringAreaCommand)
+
+
 local function onInit()
 	calculateIconTypes()
-
-	local chart_resource_chunks = settings.global["resourcemarker-starting-radius-to-generate"].value
 
 	-- for all chunks on all surfaces
 	for _, surface in pairs(game.surfaces) do
@@ -380,13 +413,10 @@ local function onInit()
 		end
 	end
 
-	log("resourcemarker-starting-radius-to-generate: " .. chart_resource_chunks)
 
-	for _, surface in pairs(game.surfaces) do
-		for r=0,chart_resource_chunks do
-			surface.request_to_generate_chunks({0,0},r)
-		end
-	end
+	local resourcemarker_starting_radius_to_generate = settings.global["resourcemarker-starting-radius-to-generate"].value
+	log("resourcemarker-starting-radius-to-generate: " .. resourcemarker_starting_radius_to_generate)
+	generateStaringArea(resourcemarker_starting_radius_to_generate)
 end
 
 script.on_init(onInit)
@@ -402,7 +432,7 @@ local function chart_generated_chunks(event)
 	end
 end
 
-commands.add_command("chart-generated-chunks","",chart_generated_chunks)
+commands.add_command("chart-generated-chunks","Reveal all generated chunks to player's force.",chart_generated_chunks)
 
 
 
@@ -427,7 +457,7 @@ local function reset_map_tags_and_data(event)
 	end
 end
 
-commands.add_command("reset-map-tags-and-data","",reset_map_tags_and_data)
+commands.add_command("reset-map-tags-and-data","Remove all labels for the given user's force and then re-tag all resources with new labels.",reset_map_tags_and_data)
 
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )

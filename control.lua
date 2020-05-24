@@ -402,7 +402,11 @@ local function parseGenerateStaringAreaCommand(commandData)
 	player.print(msg, {r=0.9, g=0.2, b=0.0})
 end
 
-commands.add_command("generate-chunks","Generate chunks around starting area (in chunk radius).",parseGenerateStaringAreaCommand)
+commands.add_command(
+	"generate-chunks",
+	"Generate chunks around starting area (in chunk radius).",
+	parseGenerateStaringAreaCommand
+)
 
 
 local function onInit()
@@ -446,7 +450,11 @@ local function chart_generated_chunks(event)
 	end
 end
 
-commands.add_command("chart-generated-chunks","Reveal all generated chunks to player's force.",chart_generated_chunks)
+commands.add_command(
+	"chart-generated-chunks",
+	"Reveal all generated chunks to player's force.",
+	chart_generated_chunks
+)
 
 
 
@@ -471,7 +479,11 @@ local function reset_map_tags_and_data(event)
 	end
 end
 
-commands.add_command("reset-map-tags-and-data","Remove all labels for the given user's force and then re-tag all resources with new labels.",reset_map_tags_and_data)
+commands.add_command(
+	"reset-map-tags-and-data",
+	"Remove all labels for the given user's force and then re-tag all resources with new labels.",
+	reset_map_tags_and_data
+)
 
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )

@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.14
+Date: 2020.5.23
+  Changes:
+    - New /clear-map-tags-and-data command that will delete/reset all map tags and mod data
+    - New /generate-chunks <int> command that will generate chunks near starting area. Takes integer argument for chunk radius.
+    - Adjust default scan radius from 40->8.
+    - Add help documentation to slash commands.
+---------------------------------------------------------------------------------------------------
 Version: 0.5.11
 Date: 2020.5.1
   Changes:

@@ -8,7 +8,7 @@ local sb = serpent.block
 
 
 --- TODO: time for a library soon...
-local function sbs(obj)
+local function sbs(obj) -- luacheck: ignore 211
 	local s = sb( obj ):gsub("%s+", " ")
 	return s
 end
@@ -383,7 +383,6 @@ end
 local function parseGenerateStaringAreaCommand(commandData)
 	local player = game.players[commandData.player_index]
 	local parameter = commandData.parameter
-	local tick = commandData.tick
 
 	local radius = tonumber(parameter)
 

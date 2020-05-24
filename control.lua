@@ -7,6 +7,13 @@ local util = require("util")
 local sb = serpent.block
 
 
+--- TODO: time for a library soon...
+local function sbs(obj)
+	local s = sb( obj ):gsub("%s+", " ")
+	return s
+end
+
+
 local function format_number(input)
 	local number = util.format_number(input,true)
 
@@ -137,6 +144,7 @@ local function on_chunk_generated(event)
 	local surface = event.surface
 	local area = event.area
 	_on_chunk_generated(surface,area)
+	--- log("on_chunk_generated  " .. sbs(surface.name) .. "  " .. sbs(area))
 end
 
 
@@ -313,6 +321,7 @@ local function on_chunk_charted(event)
 
 	local surface = game.surfaces[surface_index]
 	_on_chunk_charted(surface,force,chunkPosition,area)
+	--- log("on_chunk_charted  " .. sbs(surface.name) .. "  " .. sbs(force.name) .. "  " .. sbs(chunkPosition) .. "  " .. sbs(area))
 end
 
 

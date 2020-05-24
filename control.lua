@@ -458,22 +458,37 @@ commands.add_command(
 
 
 
-local function reset_map_tags_and_data(event)
-	local player = game.players[event.player_index]
-	local force = player.force
-
+local function clear_map_tags_and_data()
 	global["resourceMap"] = {}
 	loggedMissingResources = {}
 	lastLoggedTagCount = {}
 
 	for _, surface in pairs(game.surfaces) do
-		for _,tag in pairs(force.find_chart_tags(surface)) do
-			tag.destroy()
+		for _, force in pairs(game.forces) do
+			for _,tag in pairs(force.find_chart_tags(surface)) do
+				tag.destroy()
+			end
 		end
-		for chunk in surface.get_chunks() do
-			local chunkPosition = {x=chunk.x,y=chunk.y}
-			if force.is_chunk_charted(surface,chunkPosition) then
-				_on_chunk_charted(surface,force,chunkPosition,chunk.area)
+	end
+end
+
+commands.add_command(
+	"clear-map-tags-and-data",
+	"Remove all labels for the given user's force.",
+	clear_map_tags_and_data
+)
+
+
+local function reset_map_tags_and_data()
+	clear_map_tags_and_data()
+
+	for _, force in pairs(game.forces) do
+		for _, surface in pairs(game.surfaces) do
+			for chunk in surface.get_chunks() do
+				local chunkPosition = {x=chunk.x,y=chunk.y}
+				if force.is_chunk_charted(surface,chunkPosition) then
+					_on_chunk_charted(surface,force,chunkPosition,chunk.area)
+				end
 			end
 		end
 	end

@@ -36,7 +36,7 @@ local function getResourceCounts(resources)
 		local name = resource.name
 		local amount = resource.initial_amount or resource.amount
 
-		if resourcesFound[name]==nil then
+		if not resourcesFound[name] then
 			resourcesFound[name] = 0
 		end
 

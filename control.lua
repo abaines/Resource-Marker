@@ -269,7 +269,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 
 	local tag = force.add_chart_tag(surface,tagData)
 
-	if tag==nil then
+	if not tag then
 		local warning = "NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
 		log(warning)
 		--game.print(warning)
@@ -286,7 +286,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		local tagCount = #force.find_chart_tags(surface)
 		local lltcKey = surface.name.."^"..force.name
 
-		if lastLoggedTagCount[lltcKey]==nil or tagCount>lastLoggedTagCount[lltcKey] then
+		if not lastLoggedTagCount[lltcKey] or tagCount>lastLoggedTagCount[lltcKey] then
 			log(#force.find_chart_tags(surface).." & "..string.gsub(sb(tagData),"%s+"," "))
 		end
 

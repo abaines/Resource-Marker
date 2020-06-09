@@ -34,7 +34,7 @@ local function getResourceCounts(resources)
 
 	for _,resource in pairs(resources) do
 		local name = resource.name
-		local amount = resource.amount
+		local amount = resource.initial_amount or resource.amount
 
 		if resourcesFound[name]==nil then
 			resourcesFound[name] = 0
@@ -68,31 +68,33 @@ end
 
 
 local function getGlobalMapLocationData(surface,x,y)
-	if global["resourceMap"] == nil then
+	local name = surface.name
+
+	if not global["resourceMap"] then
 		global["resourceMap"] = {}
 	end
 
-	if global["resourceMap"][surface.name] == nil then
-		global["resourceMap"][surface.name] = {}
+	if not global["resourceMap"][name] then
+		global["resourceMap"][name] = {}
 	end
 
-	if global["resourceMap"][surface.name][x] == nil then
-		global["resourceMap"][surface.name][x] = {}
+	if not global["resourceMap"][name][x] then
+		global["resourceMap"][name][x] = {}
 	end
 
-	if global["resourceMap"][surface.name][x][y] == nil then
-		global["resourceMap"][surface.name][x][y] = {}
+	if not global["resourceMap"][name][x][y] then
+		global["resourceMap"][name][x][y] = {}
 	end
 
-	if global["resourceMap"][surface.name][x][y].resources == nil then
-		global["resourceMap"][surface.name][x][y].resources = {}
+	if not global["resourceMap"][name][x][y].resources then
+		global["resourceMap"][name][x][y].resources = {}
 	end
 
-	if global["resourceMap"][surface.name][x][y].forces == nil then
-		global["resourceMap"][surface.name][x][y].forces = {}
+	if not global["resourceMap"][name][x][y].forces then
+		global["resourceMap"][name][x][y].forces = {}
 	end
 
-	return global["resourceMap"][surface.name][x][y]
+	return global["resourceMap"][name][x][y]
 end
 
 
@@ -257,7 +259,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		loggedMissingResources[resourceIcon] = true
 	end
 
-	local number = format_number(total)
+	local number = format_number(total) .. "!" .. resource
 
 	local tagData = {
 		position = position,

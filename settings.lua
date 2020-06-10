@@ -2,6 +2,12 @@ data:extend({
 	-- runtime-global
 	{
 		type = "bool-setting",
+		name = "resourcemarker-include-raw-resource-name-in-tags",
+		default_value = true,
+		setting_type = "runtime-global",
+	},
+	{
+		type = "bool-setting",
 		name = "resourcemarker-generate-adjacent-chunks",
 		default_value = true,
 		setting_type = "runtime-global",

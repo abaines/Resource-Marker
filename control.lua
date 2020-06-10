@@ -259,11 +259,17 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		loggedMissingResources[resourceIcon] = true
 	end
 
-	local number = format_number(total) .. "!" .. resource
+	local text = format_number(total)
+
+	local append_raw_to_tag = settings.global["resourcemarker-include-raw-resource-name-in-tags"].value
+
+	if append_raw_to_tag then
+		text = text .. " " .. resource
+	end
 
 	local tagData = {
 		position = position,
-		text = number,
+		text = text,
 		icon = signalID,
 	}
 

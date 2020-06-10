@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.15
+Date: 2020.6.9
+  Changes:
+    - New setting to allow appending raw (unlocalized) resource names to tags/labels/markers when they are generated.
+---------------------------------------------------------------------------------------------------
 Version: 0.5.14
 Date: 2020.5.23
   Changes:

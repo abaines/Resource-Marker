@@ -56,6 +56,7 @@ os.sep+"description.json",
 
 whitelistextensionsinsidefolders=[
 ".png",
+".ogg",
 ]
 
 

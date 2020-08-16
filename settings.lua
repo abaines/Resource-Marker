@@ -9,13 +9,13 @@ data:extend({
 	{
 		type = "bool-setting",
 		name = "resourcemarker-generate-adjacent-chunks",
-		default_value = true,
+		default_value = false,
 		setting_type = "runtime-global",
 	},
 	{
 		type = "bool-setting",
 		name = "resourcemarker-chart-resource-chunks",
-		default_value = true,
+		default_value = false,
 		setting_type = "runtime-global",
 	},
 	{

@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.17
+Date: 2020-08-16
+  Changes:
+    - More tool-tip information for settings
+    - Update default settings
+    - Update mod portal description
+    - Update in-game description
+    - Factorio 1.0.0 !
+---------------------------------------------------------------------------------------------------
 Version: 0.6.16
 Date: 2020-08-13
   Changes:

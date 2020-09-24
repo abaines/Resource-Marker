@@ -314,7 +314,7 @@ local function on_chunk_charted(event)
 	local surface = game.surfaces[surface_index]
 	_on_chunk_charted(surface,force,chunkPosition,area)
 
-	if true then
+	if false then
 		if event.name ~= 99 then
 			log("on_chunk_charted :: Bad event name :: " .. event.name)
 		end

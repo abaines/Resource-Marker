@@ -70,29 +70,12 @@ end
 local function getGlobalMapLocationData(surface,x,y)
 	local name = surface.name
 
-	if not global["resourceMap"] then
-		global["resourceMap"] = {}
-	end
-
-	if not global["resourceMap"][name] then
-		global["resourceMap"][name] = {}
-	end
-
-	if not global["resourceMap"][name][x] then
-		global["resourceMap"][name][x] = {}
-	end
-
-	if not global["resourceMap"][name][x][y] then
-		global["resourceMap"][name][x][y] = {}
-	end
-
-	if not global["resourceMap"][name][x][y].resources then
-		global["resourceMap"][name][x][y].resources = {}
-	end
-
-	if not global["resourceMap"][name][x][y].forces then
-		global["resourceMap"][name][x][y].forces = {}
-	end
+	global["resourceMap"]                       = global["resourceMap"] or {}
+	global["resourceMap"][name]                 = global["resourceMap"][name] or {}
+	global["resourceMap"][name][x]              = global["resourceMap"][name][x] or {}
+	global["resourceMap"][name][x][y]           = global["resourceMap"][name][x][y] or {}
+	global["resourceMap"][name][x][y].resources = global["resourceMap"][name][x][y].resources or {}
+	global["resourceMap"][name][x][y].forces    = global["resourceMap"][name][x][y].forces or {}
 
 	return global["resourceMap"][name][x][y]
 end

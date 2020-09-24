@@ -129,6 +129,7 @@ local function on_chunk_generated(event)
 	local surface = event.surface
 	local area = event.area
 	_on_chunk_generated(surface,area)
+
 	--- log("on_chunk_generated  " .. sbs(surface.name) .. "  " .. sbs(area))
 end
 
@@ -312,7 +313,19 @@ local function on_chunk_charted(event)
 
 	local surface = game.surfaces[surface_index]
 	_on_chunk_charted(surface,force,chunkPosition,area)
-	--- log("on_chunk_charted  " .. sbs(surface.name) .. "  " .. sbs(force.name) .. "  " .. sbs(chunkPosition) .. "  " .. sbs(area))
+
+	if true then
+		if event.name ~= 99 then
+			log("on_chunk_charted :: Bad event name :: " .. event.name)
+		end
+
+		local logEvent = table.deepcopy( event )
+		logEvent.area=nil
+		logEvent.force=nil
+		logEvent.surface_index=nil
+		logEvent.name=nil
+		log("on_chunk_charted  " .. sbs(surface.name) .. " " .. sbs(force.name) .. " " .. sbs(logEvent))
+	end
 end
 
 

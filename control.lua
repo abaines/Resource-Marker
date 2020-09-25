@@ -286,8 +286,6 @@ end
 
 
 local function _on_chunk_charted(surface,force,chunkPosition,area)
-	_on_chunk_generated(surface,area)
-
 	local resourceData = getGlobalMapLocationData(surface,getXY(area))
 	local charted = resourceData.forces[force.name]
 
@@ -295,6 +293,8 @@ local function _on_chunk_charted(surface,force,chunkPosition,area)
 		--log("- "..string.gsub(sb(resourceData),"%s+"," "))
 		return
 	end
+
+	_on_chunk_generated(surface,area)
 
 	--log("# "..string.gsub(sb(resourceData),"%s+"," "))
 

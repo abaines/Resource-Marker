@@ -319,6 +319,7 @@ local function on_chunk_charted(event)
 	_on_chunk_charted(surface,force,chunkPosition,area)
 
 	if false then
+		-- luacheck: ignore 511
 		if event.name ~= 99 then
 			log("on_chunk_charted :: Bad event name :: " .. event.name)
 		end

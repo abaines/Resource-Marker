@@ -123,6 +123,10 @@ local function _on_chunk_generated(surface,area)
 			players.chart(surface,{area.left_top,area.left_top})
 		end
 	end
+
+	-- TODO: consider clearning this newly genereated chunk's charting data for each force
+	-- AKA reset if each force thinks it has charted this chunk before
+	-- see: resourceData.forces[force.name] = game.tick
 end
 
 local function on_chunk_generated(event)

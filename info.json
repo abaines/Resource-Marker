@@ -1,11 +1,11 @@
 {
 	"name": "resourceMarker",
-	"version": "0.6.19",
+	"version": "0.6.20",
 	"title": "Resource Map Label Marker",
 	"author": "Kizrak",
 	"contact": "",
 	"homepage": "https://github.com/abaines/Resource-Marker",
-	"factorio_version": "1.1",
+	"factorio_version": "1.0",
 	"dependencies": [
 		"base >= 1.0.0",
 		"? rso-mod"

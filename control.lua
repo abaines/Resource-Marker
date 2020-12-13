@@ -32,18 +32,35 @@ local function format_number(input)
 end
 
 
+-- lua global
+local englishMissingSpamGuard = {}
+
+local function getI18N(resource)
+	local i18n = english[resource]
+	if not i18n and not englishMissingSpamGuard[resource] then
+		local msg = "The english.lua table missing `" .. resource.."`"
+		log(msg)
+		-- game.print(msg)
+		englishMissingSpamGuard[resource]=true
+	end
+	local localResource = i18n or resource
+	return localResource
+end
+
+
 local function getResourceCounts(resources)
 	local resourcesFound = {}
 
 	for _,resource in pairs(resources) do
 		local name = resource.name
+		local localName = getI18N(name)
 		local amount = resource.initial_amount or resource.amount
 
-		if not resourcesFound[name] then
-			resourcesFound[name] = 0
+		if not resourcesFound[localName] then
+			resourcesFound[localName] = 0
 		end
 
-		resourcesFound[name] = amount + resourcesFound[name]
+		resourcesFound[localName] = amount + resourcesFound[localName]
 	end
 
 	return resourcesFound
@@ -208,20 +225,6 @@ end
 -- lua global
 local loggedMissingResources = {}
 local lastLoggedTagCount = {}
-local englishMissingSpamGuard = {}
-
-
-local function getI18N(resource)
-	local i18n = english[resource]
-	if not i18n and not englishMissingSpamGuard[resource] then
-		local msg = "The english.lua table missing `" .. resource.."`"
-		log(msg)
-		-- game.print(msg)
-		englishMissingSpamGuard[resource]=true
-	end
-	local localResource = i18n or resource
-	return localResource
-end
 
 
 local function updateMapTags(surface,force,chunkPosition,resource)
@@ -270,7 +273,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local append_raw_to_tag = settings.global["resourcemarker-include-raw-resource-name-in-tags"].value
 
 	if append_raw_to_tag then
-		text = getI18N(resource) .. " " .. text -- identical to base game build-in tooltips
+		text = resource .. " " .. text -- identical to base game build-in tooltips
 	end
 
 	local tagData = {
@@ -385,6 +388,7 @@ local function calculateIconTypes()
 			for _,product in pairs(products) do
 				if global["iconTypes"][product.name] then
 					global.aliases[name] = product.name
+					global.aliases[getI18N(name)] = product.name
 				end
 			end
 		end

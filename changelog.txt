@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.21
+Date: 2020-12-13
+  Changes:
+    - Use "english.lua" file to generate map tag names
+    - Merge resources with same "english.lua" name into one map tag
+---------------------------------------------------------------------------------------------------
 Version: 0.6.19
 Date: 2020-11-28
   Changes:

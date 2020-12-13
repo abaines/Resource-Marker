@@ -530,7 +530,7 @@ commands.add_command(
 )
 
 
-log(sbs(english))
+log("english:\n"..sbs(english))
 
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )

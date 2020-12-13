@@ -210,6 +210,20 @@ local loggedMissingResources = {}
 local lastLoggedTagCount = {}
 local englishMissingSpamGuard = {}
 
+
+local function getI18N(resource)
+	local i18n = english[resource]
+	if not i18n and not englishMissingSpamGuard[resource] then
+		local msg = "The english.lua table missing `" .. resource.."`"
+		log(msg)
+		-- game.print(msg)
+		englishMissingSpamGuard[resource]=true
+	end
+	local localResource = i18n or resource
+	return localResource
+end
+
+
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 	local total = 0
@@ -256,15 +270,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local append_raw_to_tag = settings.global["resourcemarker-include-raw-resource-name-in-tags"].value
 
 	if append_raw_to_tag then
-		local i18n = english[resource]
-		if not i18n and not englishMissingSpamGuard[resource] then
-			local msg = "The english.lua table missing `" .. resource.."`"
-			log(msg)
-			-- game.print(msg)
-			englishMissingSpamGuard[resource]=true
-		end
-		local localResource = i18n or resource
-		text = localResource .. " " .. text -- identical to base game build-in tooltips
+		text = getI18N(resource) .. " " .. text -- identical to base game build-in tooltips
 	end
 
 	local tagData = {

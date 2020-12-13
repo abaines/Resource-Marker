@@ -5,4 +5,7 @@ return {
 	["uranium-ore"]="Uranium ore", -- base game
 	["stone"]="Stone", -- base game
 	["crude-oil"]="Crude oil", -- base game
+	["infinite-iron-ore"]="Iron ore",
+	["infinite-coal"]="Coal",
+	["infinite-stone"]="Stone",
 }

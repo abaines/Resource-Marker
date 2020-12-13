@@ -226,7 +226,6 @@ end
 local loggedMissingResources = {}
 local lastLoggedTagCount = {}
 
-
 local function updateMapTags(surface,force,chunkPosition,resource)
 	local flood = floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 	local total = 0
@@ -258,13 +257,16 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		name="signal-dot",
 	}
 
-	local resourceIcon = global.aliases[resource] or resource
+	local resourceIcon = global.aliases[resource]
+	if not resourceIcon then
+		log("Warning: Missing resource icon: "..resourceIcon)
+	end
 
 	if global["iconTypes"][resourceIcon] then
 		signalID.type = global["iconTypes"][resourceIcon]
 		signalID.name = resourceIcon
 	elseif not loggedMissingResources[resourceIcon] then
-		log("missing icon: "..resourceIcon)
+		log("Warning: Missing icon type: "..resourceIcon)
 		loggedMissingResources[resourceIcon] = true
 	end
 
@@ -285,7 +287,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	local tag = force.add_chart_tag(surface,tagData)
 
 	if not tag then
-		local warning = "NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
+		local warning = "Warning: NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
 		log(warning)
 		--game.print(warning)
 
@@ -379,20 +381,17 @@ local function calculateIconTypes()
 
 	for name,value in pairs(resourcePrototypes) do
 		local products = value.mineable_properties.products
-		if table_size(products)==1 and products[1].name == name then -- luacheck: ignore 542
-			--skip
-		else
-			table.sort(products, function(a,b) return a.probability<b.probability end)
-			--log(sb( products ))
+		table.sort(products, function(a,b) return a.probability<b.probability end)
+		--log(sb( products ))
 
-			for _,product in pairs(products) do
-				if global["iconTypes"][product.name] then
-					global.aliases[name] = product.name
-					global.aliases[getI18N(name)] = product.name
-				end
+		for _,product in pairs(products) do
+			if global["iconTypes"][product.name] then
+				global.aliases[name] = product.name
+				global.aliases[getI18N(name)] = product.name
 			end
 		end
 	end
+	log("global.aliases:\n"..sbs(global.aliases))
 end
 
 

@@ -4,6 +4,9 @@
 local util = require("util")
 
 
+local english = require('english')
+
+
 local sb = serpent.block
 
 
@@ -507,6 +510,9 @@ commands.add_command(
 	"Remove all labels for the given user's force and then re-tag all resources with new labels.",
 	reset_map_tags_and_data
 )
+
+
+log(sbs(english))
 
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )

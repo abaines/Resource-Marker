@@ -259,7 +259,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 
 	local resourceIcon = global.aliases[resource]
 	if not resourceIcon then
-		log("Warning: Missing resource icon: "..resourceIcon)
+		log("Warning: Missing resource icon alias: "..tostring(resource))
 	end
 
 	if global["iconTypes"][resourceIcon] then

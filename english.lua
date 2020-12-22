@@ -98,7 +98,7 @@ return {
 	["infinite-clowns-resource1"]="Infinite Alluvial Deposit",
 	["clowns-resource2"]="Oil Sands",
 	["infinite-clowns-resource2"]="Infinite Oil Sands",
-	
+
 	-- PY
 	["borax"]="Borax",
 	["infinite-borax"]="Borax",

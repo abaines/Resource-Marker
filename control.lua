@@ -475,6 +475,7 @@ local function chart_generated_chunks(event)
 			player.force.chart(surface,chunk.area)
 		end
 	end
+	player.print("Revealing all generated chunks to your force.")
 end
 
 commands.add_command(
@@ -485,7 +486,7 @@ commands.add_command(
 
 
 
-local function clear_map_tags_and_data()
+local function clear_map_tags_and_data(event)
 	global["resourceMap"] = {}
 	loggedMissingResources = {}
 	lastLoggedTagCount = {}
@@ -497,6 +498,11 @@ local function clear_map_tags_and_data()
 			end
 		end
 	end
+
+	if event then
+		local player = game.players[event.player_index]
+		player.print("Removing all labels for the given user's force.")
+	end
 end
 
 commands.add_command(
@@ -506,8 +512,9 @@ commands.add_command(
 )
 
 
-local function reset_map_tags_and_data()
-	clear_map_tags_and_data()
+local function reset_map_tags_and_data(event)
+	local player = game.players[event.player_index]
+	clear_map_tags_and_data(nil)
 
 	for _, force in pairs(game.forces) do
 		for _, surface in pairs(game.surfaces) do
@@ -519,6 +526,8 @@ local function reset_map_tags_and_data()
 			end
 		end
 	end
+
+	player.print("Removing and re-tagging all map labels.")
 end
 
 commands.add_command(

@@ -87,17 +87,19 @@ local function getXYCenterPosition(area)
 end
 
 
+local _RESOURCE_MAP_ = "resourceMap" -- global root key
+
 local function getGlobalMapLocationData(surface,x,y)
 	local name = surface.name
 
-	global["resourceMap"]                       = global["resourceMap"] or {}
-	global["resourceMap"][name]                 = global["resourceMap"][name] or {}
-	global["resourceMap"][name][x]              = global["resourceMap"][name][x] or {}
-	global["resourceMap"][name][x][y]           = global["resourceMap"][name][x][y] or {}
-	global["resourceMap"][name][x][y].resources = global["resourceMap"][name][x][y].resources or {}
-	global["resourceMap"][name][x][y].forces    = global["resourceMap"][name][x][y].forces or {}
+	global[_RESOURCE_MAP_]                       = global[_RESOURCE_MAP_] or {}
+	global[_RESOURCE_MAP_][name]                 = global[_RESOURCE_MAP_][name] or {}
+	global[_RESOURCE_MAP_][name][x]              = global[_RESOURCE_MAP_][name][x] or {}
+	global[_RESOURCE_MAP_][name][x][y]           = global[_RESOURCE_MAP_][name][x][y] or {}
+	global[_RESOURCE_MAP_][name][x][y].resources = global[_RESOURCE_MAP_][name][x][y].resources or {}
+	global[_RESOURCE_MAP_][name][x][y].forces    = global[_RESOURCE_MAP_][name][x][y].forces or {}
 
-	return global["resourceMap"][name][x][y]
+	return global[_RESOURCE_MAP_][name][x][y]
 end
 
 
@@ -223,6 +225,7 @@ end
 
 
 -- lua global
+local _ICON_TYPES_ = "iconTypes" -- global root key
 local loggedMissingResources = {}
 local lastLoggedTagCount = {}
 
@@ -257,11 +260,13 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 		name="signal-dot",
 	}
 
-	local resourceIcon = global.aliases[resource]
+	local resourceIcon = global.aliases[resource] -- global root key
 	if not resourceIcon then
 		log("Warning: Missing resource icon alias: "..tostring(resource))
-	elseif global["iconTypes"][resourceIcon] then
-		signalID.type = global["iconTypes"][resourceIcon]
+		log("global.aliases:\n"..sbs(global.aliases))
+		log(table_size(global.aliases))
+	elseif global[_ICON_TYPES_][resourceIcon] then
+		signalID.type = global[_ICON_TYPES_][resourceIcon]
 		signalID.name = resourceIcon
 	elseif not loggedMissingResources[resourceIcon] then
 		log("Warning: Missing icon type: "..resourceIcon)
@@ -360,22 +365,54 @@ script.on_event({defines.events.on_chunk_charted},on_chunk_charted)
 
 
 
+local function printIconTypes(event)
+	-- global root keys
+	-- _RESOURCE_MAP_
+	-- _ICON_TYPES_
+	-- aliases
+
+	local function _logIconTypes(_type)
+		local list = {}
+		for key,value in pairs(global[_ICON_TYPES_]) do
+			if value == _type then
+				table.insert(list,key)
+			end
+		end
+		log(_type.."  "..table_size(list))
+	end
+
+	--log _ICON_TYPES_
+	_logIconTypes("virtual")
+	_logIconTypes("item")
+	_logIconTypes("fluid")
+
+	log("global.aliases\n"..sb(global.aliases))
+end
+
+commands.add_command(
+	"print-icon-data",
+	"Print Icons for Map Markers.",
+	printIconTypes
+)
+
+
+
+
 local function calculateIconTypes()
-	-- global.iconTypes
-	global["iconTypes"] = {}
+	global[_ICON_TYPES_] = {} -- global root key
 	for key,_ in pairs(game.virtual_signal_prototypes) do
-		global["iconTypes"][key] = "virtual"
+		global[_ICON_TYPES_][key] = "virtual"
 	end
 	for key,_ in pairs(game.item_prototypes) do
-		global["iconTypes"][key] = "item"
+		global[_ICON_TYPES_][key] = "item"
 	end
 	for key,_ in pairs(game.fluid_prototypes) do
-		global["iconTypes"][key] = "fluid"
+		global[_ICON_TYPES_][key] = "fluid"
 	end
 
 
 	local resourcePrototypes = game.get_filtered_entity_prototypes( {{filter="type",type="resource"}} )
-	global.aliases = {}
+	global.aliases = {} -- global root key
 
 	for name,value in pairs(resourcePrototypes) do
 		local products = value.mineable_properties.products
@@ -383,7 +420,7 @@ local function calculateIconTypes()
 		--log(sb( products ))
 
 		for _,product in pairs(products) do
-			if global["iconTypes"][product.name] then
+			if global[_ICON_TYPES_][product.name] then
 				global.aliases[name] = product.name
 				global.aliases[getI18N(name)] = product.name
 			end
@@ -391,6 +428,12 @@ local function calculateIconTypes()
 	end
 	log("global.aliases:\n"..sbs(global.aliases))
 end
+
+commands.add_command(
+	"reset-icon-data",
+	"Recalculate Icons for Map Markers.",
+	calculateIconTypes
+)
 
 
 local function generateStaringArea(chunkRadius)
@@ -487,7 +530,7 @@ commands.add_command(
 
 
 local function clear_map_tags_and_data(event)
-	global["resourceMap"] = {}
+	global[_RESOURCE_MAP_] = {}
 	loggedMissingResources = {}
 	lastLoggedTagCount = {}
 

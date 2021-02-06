@@ -596,6 +596,48 @@ commands.add_command(
 )
 
 
+
+local function unifiedCommandHandler(event)
+	log("unifiedCommandHandler\n"..sb(event))
+	local parameter = event.parameter:lower()
+	local player = game.players[event.player_index]
+
+	local function printHelp()
+		-- WIP
+		player.print("Parameters for `/resourcemarker` command:")
+		player.print("   chart chunks")
+		player.print("   generate chunks <radius in chunks>")
+
+		player.print("For debugging and diagnostics:")
+		player.print("   log alias data")
+		player.print("   rebuild icon data")
+		player.print("   rebuild map tag data")
+		player.print("   delete all map tags and mod data")
+	end
+
+	if string.find(parameter,"help") or string.find(parameter,"?") then
+		printHelp()
+
+	-- WIP
+	-- else if log print icon data
+	-- else if reset-icon-data
+	-- else if reset-map-tags-and-data
+	-- else if clear-map-tags-and-data
+	-- else if chart-generated-chunks
+	-- else if generate-chunks
+
+	else
+		printHelp()
+	end
+end
+
+commands.add_command(
+	"resourcemarker",
+	"Enter `/resourcemarker help` for more details.",
+	unifiedCommandHandler
+)
+
+
 log("english:\n"..sbs(english))
 
 

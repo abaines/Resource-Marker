@@ -224,6 +224,9 @@ local function floodNearbyChartedChunks(surface,force,chunkPosition,resource)
 end
 
 
+local calculateIconTypes
+
+
 -- lua global
 local _ICON_TYPES_ = "iconTypes" -- global root key
 local loggedMissingResources = {}
@@ -264,7 +267,20 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 	if not resourceIcon then
 		log("Warning: Missing resource icon alias: "..tostring(resource))
 		log("global.aliases:\n"..sbs(global.aliases))
-		log(table_size(global.aliases))
+		local global_aliases_size = table_size(global.aliases)
+		if 0==global_aliases_size then
+			local red = {1,0,0}
+			game.print({"errors.global-aliases-missing"},red)
+			game.print({"errors.rebuild-data-structure"},red)
+			calculateIconTypes()
+			local global_aliases_size = table_size(global.aliases)
+			if 0==global_aliases_size then
+				game.print({"errors.unable-to-repair"},red)
+				error("Unable to repair `global.aliases` data structure.")
+			else
+				game.print({"errors.repair-complete"},red)
+			end
+		end
 	elseif global[_ICON_TYPES_][resourceIcon] then
 		signalID.type = global[_ICON_TYPES_][resourceIcon]
 		signalID.name = resourceIcon
@@ -398,7 +414,7 @@ commands.add_command(
 
 
 
-local function calculateIconTypes()
+function calculateIconTypes()
 	global[_ICON_TYPES_] = {} -- global root key
 	for key,_ in pairs(game.virtual_signal_prototypes) do
 		global[_ICON_TYPES_][key] = "virtual"

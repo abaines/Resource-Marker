@@ -599,37 +599,56 @@ commands.add_command(
 
 local function unifiedCommandHandler(event)
 	log("unifiedCommandHandler\n"..sb(event))
-	local parameter = event.parameter:lower()
+	local parameter = event.parameter and event.parameter:lower()
 	local player = game.players[event.player_index]
 
+	local blue = {0.7,0.7,1}
+	local darkRed = {0.9,0.3,0.3}
+
 	local function printHelp()
-		local blue = {0.7,0.7,1}
 		player.print("Parameters for `/resourcemarker` command:",{0.7,1,0.7})
+
 		player.print("   chart -- Reveal all generated chunks to player's force.",blue)
 		player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).",blue)
 		player.print("   help -- Display this message.",blue)
 
-		local d = {0.9,0.3,0.3}
 		player.print("For debugging and diagnostics only:",{0.9,0.4,0.4})
-		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",d)
-		player.print("   delete -- Remove all map labels and clear mod data.",d)
-		player.print("   log -- Log aliases and icons data to log file.",d)
-		player.print("   rebuild -- clear and rebuild aliases and icon data.",d)
+
+		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)
+		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
+		player.print("   log -- Log aliases and icons data to log file.",darkRed)
+		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)
 	end
 
-	if string.find(parameter,"help") or string.find(parameter,"?") then
+	-- WIP
+
+	if not parameter then
 		printHelp()
 
-	-- WIP
-	-- else if log print icon data
-	-- else if reset-icon-data
-	-- else if reset-map-tags-and-data
-	-- else if clear-map-tags-and-data
-	-- else if chart-generated-chunks
-	-- else if generate-chunks
+	elseif string.find(parameter,"help") or string.find(parameter,"?") then
+		printHelp()
+
+	elseif string.find(parameter,"chart") then
+		player.print("   chart -- Reveal all generated chunks to player's force.",blue)
+
+	elseif string.find(parameter,"generate") then
+		player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).",blue)
+
+	elseif string.find(parameter,"retag") then
+		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)
+
+	elseif string.find(parameter,"delete") then
+		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
+
+	elseif string.find(parameter,"log") then
+		player.print("   log -- Log aliases and icons data to log file.",darkRed)
+
+	elseif string.find(parameter,"rebuild") then
+		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)
 
 	else
 		printHelp()
+
 	end
 end
 

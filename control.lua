@@ -456,9 +456,9 @@ local function generateStaringArea(chunkRadius)
 	log("request_to_generate_chunks: " .. requests)
 end
 
-local function parseGenerateStaringAreaCommand(commandData)
-	local player = game.players[commandData.player_index]
-	local parameter = commandData.parameter
+local function parseGenerateStaringAreaCommand(event)
+	local player = game.players[event.player_index]
+	local parameter = event.parameter
 
 	local radius = tonumber(parameter)
 
@@ -477,11 +477,6 @@ local function parseGenerateStaringAreaCommand(commandData)
 	player.print(msg, {r=0.9, g=0.2, b=0.0})
 end
 
-commands.add_command(
-	"generate-chunks",
-	"Generate chunks around starting area (in chunk radius).",
-	parseGenerateStaringAreaCommand
-)
 
 
 local function onInit()
@@ -526,11 +521,6 @@ local function chart_generated_chunks(event)
 	player.print("Revealing all generated chunks to your force.")
 end
 
-commands.add_command(
-	"chart-generated-chunks",
-	"Reveal all generated chunks to player's force.",
-	chart_generated_chunks
-)
 
 
 
@@ -608,9 +598,11 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"chart") then
 		player.print("   chart -- Reveal all generated chunks to player's force.",blue)
+		chart_generated_chunks(event)
 
-	elseif string.find(parameter,"generate") then
+	elseif string.find(parameter,"generat") then
 		player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).",blue)
+		parseGenerateStaringAreaCommand(event)
 
 	elseif string.find(parameter,"retag") then
 		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)

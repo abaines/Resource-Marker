@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.25
+Date: 2021-02-07
+  Changes:
+    - Upgrade to unified command line argument handler.
+    - All commands now use `/resourcemarker`.
+    - For more help and details try `/resourcemarker help`.
+    - Symtom fix for bug for `Stopped making icons #11`. Cause is still unknown.
+---------------------------------------------------------------------------------------------------
 Version: 0.6.24
 Date: 2020-12-28
   Changes:

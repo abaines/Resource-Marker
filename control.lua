@@ -381,7 +381,7 @@ script.on_event({defines.events.on_chunk_charted},on_chunk_charted)
 
 
 
-local function printIconTypes(event)
+local function logIconTypes(event)
 	-- global root keys
 	-- _RESOURCE_MAP_
 	-- _ICON_TYPES_
@@ -406,9 +406,9 @@ local function printIconTypes(event)
 end
 
 commands.add_command(
-	"print-icon-data",
-	"Print Icons for Map Markers.",
-	printIconTypes
+	"log-icon-data",
+	"Log Icons for Map Markers.",
+	logIconTypes
 )
 
 
@@ -603,16 +603,18 @@ local function unifiedCommandHandler(event)
 	local player = game.players[event.player_index]
 
 	local function printHelp()
-		-- WIP
-		player.print("Parameters for `/resourcemarker` command:")
-		player.print("   chart chunks")
-		player.print("   generate chunks <radius in chunks>")
+		local blue = {0.7,0.7,1}
+		player.print("Parameters for `/resourcemarker` command:",{0.7,1,0.7})
+		player.print("   chart -- Reveal all generated chunks to player's force.",blue)
+		player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).",blue)
+		player.print("   help -- Display this message.",blue)
 
-		player.print("For debugging and diagnostics:")
-		player.print("   log alias data")
-		player.print("   rebuild icon data")
-		player.print("   rebuild map tag data")
-		player.print("   delete all map tags and mod data")
+		local d = {0.9,0.3,0.3}
+		player.print("For debugging and diagnostics only:",{0.9,0.4,0.4})
+		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",d)
+		player.print("   delete -- Remove all map labels and clear mod data.",d)
+		player.print("   log -- Log aliases and icons data to log file.",d)
+		player.print("   rebuild -- clear and rebuild aliases and icon data.",d)
 	end
 
 	if string.find(parameter,"help") or string.find(parameter,"?") then

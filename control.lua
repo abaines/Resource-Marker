@@ -458,9 +458,22 @@ end
 
 local function parseGenerateStaringAreaCommand(event)
 	local player = game.players[event.player_index]
-	local parameter = event.parameter
+	local parameters = event.parameter
 
-	local radius = tonumber(parameter)
+	local radius =  nil
+
+	for parameter in string.gmatch(parameters, "%S+") do
+		local num = tonumber(parameter)
+
+		if num and not radius then
+			radius = num
+		elseif num then
+				local msg = "Must provide exactly one integer radius to generate chunks: " .. parameters
+				log(msg)
+				player.print(msg, {r=0.9, g=0.2, b=0.0})
+			return
+		end
+	end
 
 	if radius then
 		if radius == math.floor(radius) then
@@ -472,7 +485,7 @@ local function parseGenerateStaringAreaCommand(event)
 		end
 	end
 
-	local msg = "Must provide integer radius to generate: " .. parameter
+	local msg = "Must provide integer radius to generate: " .. parameters
 	log(msg)
 	player.print(msg, {r=0.9, g=0.2, b=0.0})
 end
@@ -513,11 +526,13 @@ script.on_init(onInit)
 
 local function chart_generated_chunks(event)
 	local player = game.players[event.player_index]
+
 	for _, surface in pairs(game.surfaces) do
 		for chunk in surface.get_chunks() do
 			player.force.chart(surface,chunk.area)
 		end
 	end
+
 	player.print("Revealing all generated chunks to your force.")
 end
 

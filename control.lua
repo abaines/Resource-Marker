@@ -405,12 +405,6 @@ local function logIconTypes(event)
 	log("global.aliases\n"..sb(global.aliases))
 end
 
-commands.add_command(
-	"log-icon-data",
-	"Log Icons for Map Markers.",
-	logIconTypes
-)
-
 
 
 
@@ -445,11 +439,6 @@ function calculateIconTypes()
 	log("global.aliases:\n"..sbs(global.aliases))
 end
 
-commands.add_command(
-	"reset-icon-data",
-	"Recalculate Icons for Map Markers.",
-	calculateIconTypes
-)
 
 
 local function generateStaringArea(chunkRadius)
@@ -560,15 +549,10 @@ local function clear_map_tags_and_data(event)
 
 	if event then
 		local player = game.players[event.player_index]
-		player.print("Removing all labels for the given user's force.")
+		player.print("Removed all map labels and cleared mod data.")
 	end
 end
 
-commands.add_command(
-	"clear-map-tags-and-data",
-	"Remove all labels for the given user's force.",
-	clear_map_tags_and_data
-)
 
 
 local function reset_map_tags_and_data(event)
@@ -586,14 +570,8 @@ local function reset_map_tags_and_data(event)
 		end
 	end
 
-	player.print("Removing and re-tagging all map labels.")
+	player.print("Removed and re-tagged all map labels.")
 end
-
-commands.add_command(
-	"reset-map-tags-and-data",
-	"Remove all labels for the given user's force and then re-tag all resources with new labels.",
-	reset_map_tags_and_data
-)
 
 
 
@@ -636,15 +614,19 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"retag") then
 		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)
+		reset_map_tags_and_data(event)
 
 	elseif string.find(parameter,"delete") then
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
+		clear_map_tags_and_data(event)
 
 	elseif string.find(parameter,"log") then
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)
+		logIconTypes(event)
 
 	elseif string.find(parameter,"rebuild") then
 		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)
+		calculateIconTypes()
 
 	else
 		printHelp()

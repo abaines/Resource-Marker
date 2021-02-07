@@ -273,7 +273,7 @@ local function updateMapTags(surface,force,chunkPosition,resource)
 			game.print({"errors.global-aliases-missing"},red)
 			game.print({"errors.rebuild-data-structure"},red)
 			calculateIconTypes()
-			local global_aliases_size = table_size(global.aliases)
+			local global_aliases_size = table_size(global.aliases) -- luacheck: ignore 421
 			if 0==global_aliases_size then
 				game.print({"errors.unable-to-repair"},red)
 				error("Unable to repair `global.aliases` data structure.")
@@ -381,7 +381,7 @@ script.on_event({defines.events.on_chunk_charted},on_chunk_charted)
 
 
 
-local function logIconTypes(event)
+local function logIconTypes()
 	-- global root keys
 	-- _RESOURCE_MAP_
 	-- _ICON_TYPES_
@@ -629,7 +629,7 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"log") then
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)
-		logIconTypes(event)
+		logIconTypes()
 
 	elseif string.find(parameter,"rebuild") then
 		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)

@@ -1,13 +1,13 @@
 {
 	"name": "resourceMarker",
-	"version": "0.7.25",
+	"version": "0.7.26",
 	"title": "Resource Map Label Marker",
 	"author": "Kizrak",
 	"contact": "",
 	"homepage": "https://github.com/abaines/Resource-Marker",
 	"factorio_version": "1.1",
 	"dependencies": [
-		"base >= 1.0.0",
+		"base >= 1.1.42",
 		"? rso-mod"
 	],
 	"description": "Creates resource map label markers when chunks get generated and charted. See resources through fog of war.\n\nPlease review settings and consult Mod portal before starting!! 🚀\n\n#icon #resources #map #reveal #label #markers #chunks #generated #chart #tag #ore #count #fog-of-war"

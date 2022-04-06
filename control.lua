@@ -425,7 +425,7 @@ function calculateIconTypes()
 	global.aliases = {} -- global root key
 
 	for name,value in pairs(resourcePrototypes) do
-		local products = value.mineable_properties.products
+		local products = value.mineable_properties.products or {}
 		table.sort(products, function(a,b) return a.probability<b.probability end)
 		--log(sb( products ))
 

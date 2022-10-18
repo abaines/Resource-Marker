@@ -126,4 +126,23 @@ return {
 	["infinite-ore-zinc"]="Zinc",
 	["oil-sand"]="Oil sand",
 	["infinite-oil-sand"]="Oil sand",
+	
+		-- Krastorio
+	["imersite"]="Raw Imersite",
+	["mineral-water"]="Mineral Water",
+	["rare-metals"]="Rare Metals",
+
+	-- Space Exploration
+	["se-beryllium-ore"]="Beryl",
+	["se-cryonite"]="Cryonite",
+	["se-holmium-ore"]="Holminite",
+	["se-iridium-ore"]="Iridite",
+	["se-methane-ice"]="Methane Ice",
+	["se-naquium-ore"]="Naquitite",
+	["se-vitamelange"]="Vitamelange",
+	["se-vulcanite"]="Vulcanite",
+	["se-water-ice"]="Water Ice",
+
+	-- Cargo Ships
+	["deep_oil"]="Deep Oil",
 }

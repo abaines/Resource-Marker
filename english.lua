@@ -134,6 +134,7 @@ return {
 
 	-- Space Exploration
 	["se-beryllium-ore"]="Beryl",
+	["se-core-fragment-omni"]="Core Seam",
 	["se-cryonite"]="Cryonite",
 	["se-holmium-ore"]="Holminite",
 	["se-iridium-ore"]="Iridite",

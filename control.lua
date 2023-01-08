@@ -536,33 +536,54 @@ local function chart_generated_chunks(event)
 	player.print("Revealing all generated chunks to your force.")
 end
 
-
-
-
 local function clear_map_tags_and_data(event)
 	global[_RESOURCE_MAP_] = {}
 	loggedMissingResources = {}
 	lastLoggedTagCount = {}
-
+	local parameters = event.parameter
+	
+	local tag_exceptions = {}
+	local i = 0 -- used to ignore first parameter entry
+	for parameter in string.gmatch(parameters, "([^,]+)") do
+		if i ~= 0 then tag_exceptions[parameter] = true end -- if not first parameter entry then insert key into lookup table
+		i = i + 1
+	end
+	
+	local player = game.players[event.player_index]
+	
+	--local keys={}
+	--for key,_ in pairs(tag_exceptions) do
+	--	player.print(key)
+	--end
+	
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
-				tag.destroy()
+				if i ~= 1 then -- if user inputted atleast 1 tag exception
+					local tag_length = string.len(tag.text) -- find length of tag name
+					local cutoff,_ = string.find(string.reverse(tag.text), " ", 1, true) -- find index of the last space bar.
+					if tag_exceptions[string.sub(tag.text, 1, tag_length - cutoff)] == nil then -- if tag.text isn't in the lookup table
+						tag.destroy()
+					end
+				else
+					tag.destroy()
+				end
 			end
 		end
 	end
 
-	if event then
-		local player = game.players[event.player_index]
-		player.print("Removed all map labels and cleared mod data.")
-	end
+	--for _,tag_exception in pairs(tag_exceptions) do player.print(tag_exception .. "(string comparison)") end
+	--if event then
+	--	local player = game.players[event.player_index]
+	--	player.print("Removed all map labels and cleared mod data.")
+	--end
 end
 
 
 
 local function reset_map_tags_and_data(event)
 	local player = game.players[event.player_index]
-	clear_map_tags_and_data(nil)
+	clear_map_tags_and_data(event)
 
 	for _, force in pairs(game.forces) do
 		for _, surface in pairs(game.surfaces) do

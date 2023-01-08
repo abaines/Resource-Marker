@@ -565,7 +565,6 @@ local function clear_map_tags_and_data(event)
 		end
 	end
 
-	--for _,tag_exception in pairs(tag_exceptions) do player.print(tag_exception .. "(string comparison)") end
 	--if event then
 	--	local player = game.players[event.player_index]
 	--	player.print("Removed all map labels and cleared mod data.")

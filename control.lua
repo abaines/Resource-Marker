@@ -549,13 +549,6 @@ local function clear_map_tags_and_data(event)
 		i = i + 1
 	end
 	
-	local player = game.players[event.player_index]
-	
-	--local keys={}
-	--for key,_ in pairs(tag_exceptions) do
-	--	player.print(key)
-	--end
-	
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
@@ -565,7 +558,7 @@ local function clear_map_tags_and_data(event)
 					if tag_exceptions[string.sub(tag.text, 1, tag_length - cutoff)] == nil then -- if tag.text isn't in the lookup table
 						tag.destroy()
 					end
-				else
+				else -- if user didn't input any tag exceptions
 					tag.destroy()
 				end
 			end

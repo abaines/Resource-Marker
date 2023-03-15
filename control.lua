@@ -671,7 +671,7 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"delete") then
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
-		tag_exceptions = _get_tag_exceptions(event)
+		local tag_exceptions = _get_tag_exceptions(event)
 		clear_map_tags_and_data(event,tag_exceptions)
 
 	elseif string.find(parameter,"log") then

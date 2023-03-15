@@ -17,6 +17,17 @@ local function sbs(obj) -- luacheck: ignore 211
 end
 
 
+local function table_length(tb)
+	-- table array size length count
+	assert(type(tb)=='table')
+
+	count = 0
+	for k in pairs(tb) do
+		count = count + 1
+	end
+	return count
+end
+
 local function format_number(input)
 	local number = util.format_number(input,true)
 
@@ -536,7 +547,15 @@ local function chart_generated_chunks(event)
 	player.print("Revealing all generated chunks to your force.")
 end
 
-local function clear_map_tags_and_data(event)
+local function _get_ore_name(tag)
+	local tag_length = string.len(tag.text) -- find length of tag name
+	local cutoff,_ = string.find(string.reverse(tag.text), " ", 1, true) -- find index of the last space bar.
+	local tag_ore_name = string.sub(tag.text, 1, tag_length - cutoff)
+	
+	return tag_ore_name
+end
+
+local function clear_map_tags_and_data(event,tag_exceptions)
 	global[_RESOURCE_MAP_] = {}
 	loggedMissingResources = {}
 	lastLoggedTagCount = {}
@@ -548,27 +567,30 @@ local function clear_map_tags_and_data(event)
 		if i ~= 0 then tag_exceptions[parameter] = true end -- if not first parameter entry then insert key into lookup table
 		i = i + 1
 	end
-	
+
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
-				if i ~= 1 then -- if user inputted atleast 1 tag exception
-					local tag_length = string.len(tag.text) -- find length of tag name
-					local cutoff,_ = string.find(string.reverse(tag.text), " ", 1, true) -- find index of the last space bar.
-					if tag_exceptions[string.sub(tag.text, 1, tag_length - cutoff)] == nil then -- if tag.text isn't in the lookup table
-						tag.destroy()
-					end
-				else -- if user didn't input any tag exceptions
+				local tag_ore_name = _get_ore_name(tag)
+				log(tag_ore_name)
+				if tag_exceptions[tag_ore_name] == nil then -- if tag.text isn't in the lookup table
 					tag.destroy()
 				end
 			end
 		end
 	end
 
-	--if event then
-	--	local player = game.players[event.player_index]
-	--	player.print("Removed all map labels and cleared mod data.")
-	--end
+	if event then
+		local player = game.players[event.player_index]
+		if table_length(tag_exceptions) >0 then
+			player.print("Removed all map labels and cleared mod data, except:")
+			for tag_exp in pairs(tag_exceptions) do
+				player.print("   " .. tag_exp)
+			end
+		else
+			player.print("Removed all map labels and cleared mod data")
+		end
+	end
 end
 
 

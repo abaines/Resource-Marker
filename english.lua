@@ -126,7 +126,7 @@ return {
 	["infinite-ore-zinc"]="Zinc",
 	["oil-sand"]="Oil sand",
 	["infinite-oil-sand"]="Oil sand",
-	
+
 		-- Krastorio
 	["imersite"]="Raw Imersite",
 	["mineral-water"]="Mineral Water",

@@ -17,6 +17,17 @@ local function sbs(obj) -- luacheck: ignore 211
 end
 
 
+local function table_length(tb)
+	-- table array size length count
+	assert(type(tb)=='table')
+
+	local count = 0
+	for k in pairs(tb) do
+		count = count + 1
+	end
+	return count
+end
+
 local function format_number(input)
 	local number = util.format_number(input,true)
 
@@ -536,25 +547,58 @@ local function chart_generated_chunks(event)
 	player.print("Revealing all generated chunks to your force.")
 end
 
+local function _get_ore_name(tag)
+	local text = tag.text
+	local tag_length = string.len(text) -- find length of tag name
+	local cutoff,_ = string.find(string.reverse(text), " ", 1, true) -- find index of the last space
+	local tag_ore_name = string.sub(text, 1, tag_length - cutoff)
 
+	return tag_ore_name
+end
 
+local function _get_tag_exceptions(event)
+	local parameters = event.parameter
 
-local function clear_map_tags_and_data(event)
+	local tag_exceptions = {}
+	local i = 0 -- used to ignore first parameter entry
+
+	for parameter in string.gmatch(parameters, "([^,]+)") do
+		if i ~= 0 then -- if not first parameter entry then insert key into lookup table
+			local cleaned_param = parameter:match('^%s*(.-)%s*$'):lower()
+			tag_exceptions[cleaned_param] = true
+		end
+		i = i + 1
+	end
+
+	return tag_exceptions
+end
+
+local function clear_map_tags_and_data(event,tag_exceptions)
 	global[_RESOURCE_MAP_] = {}
-	loggedMissingResources = {}
-	lastLoggedTagCount = {}
+
+	tag_exceptions = tag_exceptions or {}
 
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
-				tag.destroy()
+				local tag_ore_name = _get_ore_name(tag):lower()
+				if tag_exceptions[tag_ore_name] == nil then
+					tag.destroy()
+				end
 			end
 		end
 	end
 
 	if event then
 		local player = game.players[event.player_index]
-		player.print("Removed all map labels and cleared mod data.")
+		if table_length(tag_exceptions) >0 then
+			player.print("Removed all map labels and cleared mod data, except:")
+			for tag_exp in pairs(tag_exceptions) do
+				player.print("   " .. tag_exp)
+			end
+		else
+			player.print("Removed all map labels and cleared mod data.")
+		end
 	end
 end
 
@@ -599,6 +643,8 @@ local function unifiedCommandHandler(event)
 
 		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
+		player.print("      a list of ores can be provided to be ignored during tag deletion, such as:",darkRed)
+		player.print("      /resourcemarker delete,Copper ore,Iron ore",darkRed)
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)
 		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)
 	end
@@ -625,7 +671,8 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"delete") then
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
-		clear_map_tags_and_data(event)
+		local tag_exceptions = _get_tag_exceptions(event)
+		clear_map_tags_and_data(event,tag_exceptions)
 
 	elseif string.find(parameter,"log") then
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)

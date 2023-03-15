@@ -551,16 +551,13 @@ local function _get_ore_name(tag)
 	local tag_length = string.len(tag.text) -- find length of tag name
 	local cutoff,_ = string.find(string.reverse(tag.text), " ", 1, true) -- find index of the last space bar.
 	local tag_ore_name = string.sub(tag.text, 1, tag_length - cutoff)
-	
+
 	return tag_ore_name
 end
 
-local function clear_map_tags_and_data(event,tag_exceptions)
-	global[_RESOURCE_MAP_] = {}
-	loggedMissingResources = {}
-	lastLoggedTagCount = {}
+local function _get_tag_exceptions(event)
 	local parameters = event.parameter
-	
+
 	local tag_exceptions = {}
 	local i = 0 -- used to ignore first parameter entry
 	for parameter in string.gmatch(parameters, "([^,]+)") do
@@ -568,11 +565,21 @@ local function clear_map_tags_and_data(event,tag_exceptions)
 		i = i + 1
 	end
 
+	return tag_exceptions
+end
+
+local function clear_map_tags_and_data(event,tag_exceptions)
+	global[_RESOURCE_MAP_] = {}
+
+	local loggedMissingResources = {}
+	local lastLoggedTagCount = {}
+
+	tag_exceptions = tag_exceptions or {}
+
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
 				local tag_ore_name = _get_ore_name(tag)
-				log(tag_ore_name)
 				if tag_exceptions[tag_ore_name] == nil then -- if tag.text isn't in the lookup table
 					tag.destroy()
 				end
@@ -634,6 +641,8 @@ local function unifiedCommandHandler(event)
 
 		player.print("   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels.",darkRed)
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
+		player.print("      a list of ores can be provided to be ignored during tag deletion, such as:",darkRed)
+		player.print("      /resourcemarker delete,Copper ore,Iron ore",darkRed)
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)
 		player.print("   rebuild -- clear and rebuild aliases and icon data.",darkRed)
 	end
@@ -660,7 +669,8 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter,"delete") then
 		player.print("   delete -- Remove all map labels and clear mod data.",darkRed)
-		clear_map_tags_and_data(event)
+		tag_exceptions = _get_tag_exceptions(event)
+		clear_map_tags_and_data(event,tag_exceptions)
 
 	elseif string.find(parameter,"log") then
 		player.print("   log -- Log aliases and icons data to log file.",darkRed)

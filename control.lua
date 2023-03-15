@@ -600,7 +600,7 @@ local function clear_map_tags_and_data(event,tag_exceptions)
 				player.print("   " .. tag_exp)
 			end
 		else
-			player.print("Removed all map labels and cleared mod data")
+			player.print("Removed all map labels and cleared mod data.")
 		end
 	end
 end

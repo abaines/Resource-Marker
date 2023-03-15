@@ -21,7 +21,7 @@ local function table_length(tb)
 	-- table array size length count
 	assert(type(tb)=='table')
 
-	count = 0
+	local count = 0
 	for k in pairs(tb) do
 		count = count + 1
 	end
@@ -564,8 +564,8 @@ local function _get_tag_exceptions(event)
 
 	for parameter in string.gmatch(parameters, "([^,]+)") do
 		if i ~= 0 then -- if not first parameter entry then insert key into lookup table
-			trimmed = parameter:match('^%s*(.-)%s*$'):lower()
-			tag_exceptions[trimmed] = true
+			local cleaned_param = parameter:match('^%s*(.-)%s*$'):lower()
+			tag_exceptions[cleaned_param] = true
 		end
 		i = i + 1
 	end
@@ -575,9 +575,6 @@ end
 
 local function clear_map_tags_and_data(event,tag_exceptions)
 	global[_RESOURCE_MAP_] = {}
-
-	local loggedMissingResources = {}
-	local lastLoggedTagCount = {}
 
 	tag_exceptions = tag_exceptions or {}
 

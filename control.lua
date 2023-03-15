@@ -609,7 +609,7 @@ end
 
 local function reset_map_tags_and_data(event)
 	local player = game.players[event.player_index]
-	clear_map_tags_and_data(event)
+	clear_map_tags_and_data(nil)
 
 	for _, force in pairs(game.forces) do
 		for _, surface in pairs(game.surfaces) do

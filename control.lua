@@ -566,7 +566,7 @@ local function _get_tag_exceptions(event)
 		if i ~= 0 then -- if not first parameter entry then insert key into lookup table
 			trimmed = parameter:match('^%s*(.-)%s*$'):lower()
 			tag_exceptions[trimmed] = true
-		 end
+		end
 		i = i + 1
 	end
 

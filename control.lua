@@ -548,9 +548,10 @@ local function chart_generated_chunks(event)
 end
 
 local function _get_ore_name(tag)
-	local tag_length = string.len(tag.text) -- find length of tag name
-	local cutoff,_ = string.find(string.reverse(tag.text), " ", 1, true) -- find index of the last space bar.
-	local tag_ore_name = string.sub(tag.text, 1, tag_length - cutoff)
+	local text = tag.text
+	local tag_length = string.len(text) -- find length of tag name
+	local cutoff,_ = string.find(string.reverse(text), " ", 1, true) -- find index of the last space
+	local tag_ore_name = string.sub(text, 1, tag_length - cutoff)
 
 	return tag_ore_name
 end
@@ -560,8 +561,12 @@ local function _get_tag_exceptions(event)
 
 	local tag_exceptions = {}
 	local i = 0 -- used to ignore first parameter entry
+
 	for parameter in string.gmatch(parameters, "([^,]+)") do
-		if i ~= 0 then tag_exceptions[parameter] = true end -- if not first parameter entry then insert key into lookup table
+		if i ~= 0 then -- if not first parameter entry then insert key into lookup table
+			trimmed = parameter:match('^%s*(.-)%s*$'):lower()
+			tag_exceptions[trimmed] = true
+		 end
 		i = i + 1
 	end
 
@@ -579,8 +584,8 @@ local function clear_map_tags_and_data(event,tag_exceptions)
 	for _, surface in pairs(game.surfaces) do
 		for _, force in pairs(game.forces) do
 			for _,tag in pairs(force.find_chart_tags(surface)) do
-				local tag_ore_name = _get_ore_name(tag)
-				if tag_exceptions[tag_ore_name] == nil then -- if tag.text isn't in the lookup table
+				local tag_ore_name = _get_ore_name(tag):lower()
+				if tag_exceptions[tag_ore_name] == nil then
 					tag.destroy()
 				end
 			end

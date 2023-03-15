@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.29
+Date: 2023-03-14
+  Changes:
+    - Improve delete command to accept list of ores to ignore (thanks Notnilc2107)
+    - Add more mod string names (Krastorio and Cargo Ships) (thanks phoenixuprising)
+---------------------------------------------------------------------------------------------------
 Version: 0.7.28
 Date: 2022-04-06
   Changes:

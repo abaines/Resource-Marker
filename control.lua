@@ -538,6 +538,9 @@ local function _get_ore_name(tag)
 	local text = tag.text
 	local tag_length = string.len(text) -- find length of tag name
 	local cutoff, _ = string.find(string.reverse(text), " ", 1, true) -- find index of the last space
+	if not cutoff then
+		cutoff = 0
+	end
 	local tag_ore_name = string.sub(text, 1, tag_length - cutoff)
 
 	return tag_ore_name

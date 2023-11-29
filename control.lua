@@ -2,6 +2,7 @@
 local util = require("util")
 
 local i18n = require('english_lib')
+local glib = require('global_lib')
 
 local sb = serpent.block
 
@@ -83,25 +84,10 @@ local function getXYCenterPosition(area)
 end
 
 
-local _RESOURCE_MAP_ = "resourceMap" -- global root key
-
-local function getGlobalMapLocationData(surface, x, y)
-	local name = surface.name
-
-	global[_RESOURCE_MAP_] = global[_RESOURCE_MAP_] or {}
-	global[_RESOURCE_MAP_][name] = global[_RESOURCE_MAP_][name] or {}
-	global[_RESOURCE_MAP_][name][x] = global[_RESOURCE_MAP_][name][x] or {}
-	global[_RESOURCE_MAP_][name][x][y] = global[_RESOURCE_MAP_][name][x][y] or {}
-	global[_RESOURCE_MAP_][name][x][y].resources = global[_RESOURCE_MAP_][name][x][y].resources or {}
-	global[_RESOURCE_MAP_][name][x][y].forces = global[_RESOURCE_MAP_][name][x][y].forces or {}
-
-	return global[_RESOURCE_MAP_][name][x][y]
-end
-
 
 local function updateGlobalResourceMap(surface, resourceName, x, y, amount)
 	-- log(resourceName..','..x..','..y..','..amount)
-	local locData = getGlobalMapLocationData(surface, x, y)
+	local locData = glib.getGlobalMapLocationData(surface, x, y)
 	local amt = -math.huge
 
 	if locData[resourceName] and locData[resourceName].amount then
@@ -176,7 +162,7 @@ local function getNearbyChartedChunks(surface, force, chunkPosition, resource)
 
 	for x = chunkPosition.x - 1, chunkPosition.x + 1 do
 		for y = chunkPosition.y - 1, chunkPosition.y + 1 do
-			local data = getGlobalMapLocationData(surface, x, y)
+			local data = glib.getGlobalMapLocationData(surface, x, y)
 			if data.resources[resource] and force.is_chunk_charted(surface, chunkPosition) then
 				-- log("   " .. x .. "   " .. y .. "   " .. data.resources[resource].amount)
 				chunkPositions[getXYKey(x, y)] = data.resources[resource]
@@ -220,7 +206,6 @@ end
 local calculateIconTypes
 
 -- lua global
-local _ICON_TYPES_ = "iconTypes" -- global root key
 local loggedMissingResources = {}
 local lastLoggedTagCount = {}
 
@@ -251,33 +236,6 @@ local function updateMapTags(surface, force, chunkPosition, resource)
 		return
 	end
 
-	local signalID = {type = "virtual", name = "signal-dot"}
-
-	local resourceIcon = global.aliases[resource] -- global root key
-	if not resourceIcon then
-		log("Warning: Missing resource icon alias: " .. tostring(resource))
-		log("global.aliases:\n" .. sbs(global.aliases))
-		local global_aliases_size = table_size(global.aliases)
-		if 0 == global_aliases_size then
-			local red = {1, 0, 0}
-			game.print({"errors.global-aliases-missing"}, red)
-			game.print({"errors.rebuild-data-structure"}, red)
-			calculateIconTypes()
-			local global_aliases_size = table_size(global.aliases) -- luacheck: ignore 421
-			if 0 == global_aliases_size then
-				game.print({"errors.unable-to-repair"}, red)
-				error("Unable to repair `global.aliases` data structure.")
-			else
-				game.print({"errors.repair-complete"}, red)
-			end
-		end
-	elseif global[_ICON_TYPES_][resourceIcon] then
-		signalID.type = global[_ICON_TYPES_][resourceIcon]
-		signalID.name = resourceIcon
-	elseif not loggedMissingResources[resourceIcon] then
-		log("Warning: Missing icon type: " .. resourceIcon)
-		loggedMissingResources[resourceIcon] = true
-	end
 
 	local text = format_number(total)
 
@@ -318,7 +276,7 @@ end
 
 
 local function _on_chunk_charted(surface, force, chunkPosition, area)
-	local resourceData = getGlobalMapLocationData(surface, getXY(area))
+	local resourceData = glib.getGlobalMapLocationData(surface, getXY(area))
 	local charted = resourceData.forces[force.name]
 
 	if charted then
@@ -365,66 +323,8 @@ end
 
 script.on_event({defines.events.on_chunk_charted}, on_chunk_charted)
 
-local function logIconTypes()
-	-- global root keys
-	-- _RESOURCE_MAP_
-	-- _ICON_TYPES_
-	-- aliases
-
-	local function _logIconTypes(_type)
-		local list = {}
-		for key, value in pairs(global[_ICON_TYPES_]) do
-			if value == _type then
-				table.insert(list, key)
-			end
-		end
-		log(_type .. "  " .. table_size(list))
-	end
 
 
-	-- log _ICON_TYPES_
-	_logIconTypes("virtual")
-	_logIconTypes("item")
-	_logIconTypes("fluid")
-
-	log("global.aliases\n" .. sb(global.aliases))
-end
-
-
-function calculateIconTypes()
-	global[_ICON_TYPES_] = {} -- global root key
-	for key, _ in pairs(game.virtual_signal_prototypes) do
-		global[_ICON_TYPES_][key] = "virtual"
-	end
-	for key, _ in pairs(game.item_prototypes) do
-		global[_ICON_TYPES_][key] = "item"
-	end
-	for key, _ in pairs(game.fluid_prototypes) do
-		global[_ICON_TYPES_][key] = "fluid"
-	end
-
-	local resourcePrototypes = game.get_filtered_entity_prototypes({{filter = "type", type = "resource"}})
-	global.aliases = {} -- global root key
-
-	for name, value in pairs(resourcePrototypes) do
-		local products = value.mineable_properties.products or {}
-		local sorter = function(a, b)
-			return a.probability < b.probability
-		end
-
-
-		table.sort(products, sorter)
-		-- log(sb( products ))
-
-		for _, product in pairs(products) do
-			if global[_ICON_TYPES_][product.name] then
-				global.aliases[name] = product.name
-				global.aliases[i18n.resource(name)] = product.name
-			end
-		end
-	end
-	log("global.aliases:\n" .. sbs(global.aliases))
-end
 
 
 local function generateStaringArea(chunkRadius)
@@ -479,7 +379,7 @@ end
 
 
 local function onInit()
-	calculateIconTypes()
+	glib.calculateIconTypes()
 
 	-- for all chunks on all surfaces
 	for _, surface in pairs(game.surfaces) do
@@ -511,7 +411,7 @@ script.on_init(onInit)
 
 local function on_configuration_changed()
 	log("on_configuration_changed")
-	calculateIconTypes()
+	glib.calculateIconTypes()
 end
 
 script.on_configuration_changed(on_configuration_changed)
@@ -562,8 +462,8 @@ end
 
 
 local function clear_map_tags_and_data(event, tag_exceptions)
-	global[_RESOURCE_MAP_] = {}
 
+	
 	tag_exceptions = tag_exceptions or {}
 
 	for _, surface in pairs(game.surfaces) do

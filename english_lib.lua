@@ -2,8 +2,6 @@
 
 local english = require('english')
 
-local M = {}
-
 local sb = serpent.block
 
 --- TODO: time for a library soon...
@@ -11,6 +9,8 @@ local function sbs(obj) -- luacheck: ignore 211
 	local s = sb(obj):gsub("%s+", " ")
 	return s
 end
+
+local M = {}
 
 -- lua global
 local englishMissingSpamGuard = {}

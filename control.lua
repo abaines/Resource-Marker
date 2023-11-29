@@ -12,7 +12,6 @@ local function sbs(obj) -- luacheck: ignore 211
 	return s
 end
 
-
 local function table_length(tb)
 	-- table array size length count
 	assert(type(tb) == 'table')
@@ -23,7 +22,6 @@ local function table_length(tb)
 	end
 	return count
 end
-
 
 local function format_number(input)
 	local number = util.format_number(input, true)
@@ -38,10 +36,6 @@ local function format_number(input)
 
 	return number
 end
-
-
-
-
 
 local function getResourceCounts(resources)
 	local resourcesFound = {}
@@ -61,7 +55,6 @@ local function getResourceCounts(resources)
 	return resourcesFound
 end
 
-
 local function getXYCenter(area)
 	local x = (area.left_top.x + area.right_bottom.x) / 2
 	local y = (area.left_top.y + area.right_bottom.y) / 2
@@ -69,21 +62,17 @@ local function getXYCenter(area)
 	return x, y
 end
 
-
 local function getXY(area)
 	local x, y = getXYCenter(area)
 
 	return math.floor(x / 32), math.floor(y / 32)
 end
 
-
 local function getXYCenterPosition(area)
 	local x, y = getXYCenter(area)
 
 	return {x = x, y = y}
 end
-
-
 
 local function updateGlobalResourceMap(surface, resourceName, x, y, amount)
 	-- log(resourceName..','..x..','..y..','..amount)
@@ -97,13 +86,11 @@ local function updateGlobalResourceMap(surface, resourceName, x, y, amount)
 	locData.resources[resourceName] = {amount = math.max(amt, amount)}
 end
 
-
 local function updateGlobalResourceMapForTile(surface, x, y, resourcesFound)
 	for name, amount in pairs(resourcesFound) do
 		updateGlobalResourceMap(surface, name, x, y, amount)
 	end
 end
-
 
 local function _on_chunk_generated(surface, area)
 	local x, y = getXY(area)
@@ -133,7 +120,6 @@ local function _on_chunk_generated(surface, area)
 	-- see: resourceData.forces[force.name] = game.tick
 end
 
-
 local function on_chunk_generated(event)
 	local surface = event.surface
 	local area = event.area
@@ -142,19 +128,16 @@ local function on_chunk_generated(event)
 	--- log("on_chunk_generated  " .. sbs(surface.name) .. "  " .. sbs(area))
 end
 
-
 script.on_event({defines.events.on_chunk_generated}, on_chunk_generated)
 
 local function getXYKey(x, y)
 	return math.floor(x) .. ',' .. math.floor(y)
 end
 
-
 local function dekeyXY(key)
 	local x, y = key:match("([^,]+),([^,]+)")
 	return math.floor(x), math.floor(y)
 end
-
 
 local function getNearbyChartedChunks(surface, force, chunkPosition, resource)
 	-- log(resource .. "   " .. chunkPosition.x .. "   " .. chunkPosition.y)
@@ -172,7 +155,6 @@ local function getNearbyChartedChunks(surface, force, chunkPosition, resource)
 
 	return chunkPositions
 end
-
 
 local function floodNearbyChartedChunks(surface, force, chunkPosition, resource)
 	local chunkPositions = getNearbyChartedChunks(surface, force, chunkPosition, resource)
@@ -201,7 +183,6 @@ local function floodNearbyChartedChunks(surface, force, chunkPosition, resource)
 	log("EXCESSIVE FLOODING!")
 	return chunkPositions
 end
-
 
 local calculateIconTypes
 
@@ -250,7 +231,8 @@ local function updateMapTags(surface, force, chunkPosition, resource)
 	local tag = force.add_chart_tag(surface, tagData)
 
 	if not tag then
-		local warning = "Warning: NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
+		local warning =
+			"Warning: NIL TAG: resource:" .. resource .. "   total:" .. total .. "   x:" .. position.x .. "   y:" .. position.y
 		log(warning)
 		-- game.print(warning)
 
@@ -274,7 +256,6 @@ local function updateMapTags(surface, force, chunkPosition, resource)
 	end
 end
 
-
 local function _on_chunk_charted(surface, force, chunkPosition, area)
 	local resourceData = glib.getGlobalMapLocationData(surface, getXY(area))
 	local charted = resourceData.forces[force.name]
@@ -294,7 +275,6 @@ local function _on_chunk_charted(surface, force, chunkPosition, area)
 
 	resourceData.forces[force.name] = game.tick
 end
-
 
 local function on_chunk_charted(event)
 	local surface_index = event.surface_index -- uint
@@ -320,12 +300,7 @@ local function on_chunk_charted(event)
 	end
 end
 
-
 script.on_event({defines.events.on_chunk_charted}, on_chunk_charted)
-
-
-
-
 
 local function generateStaringArea(chunkRadius)
 	log("generateStaringArea: " .. chunkRadius)
@@ -341,7 +316,6 @@ local function generateStaringArea(chunkRadius)
 
 	log("request_to_generate_chunks: " .. requests)
 end
-
 
 local function parseGenerateStaringAreaCommand(event)
 	local player = game.players[event.player_index]
@@ -377,7 +351,6 @@ local function parseGenerateStaringAreaCommand(event)
 	player.print(msg, {r = 0.9, g = 0.2, b = 0.0})
 end
 
-
 local function onInit()
 	glib.calculateIconTypes()
 
@@ -405,9 +378,7 @@ local function onInit()
 	generateStaringArea(resourcemarker_starting_radius_to_generate)
 end
 
-
 script.on_init(onInit)
-
 
 local function on_configuration_changed()
 	log("on_configuration_changed")
@@ -415,7 +386,6 @@ local function on_configuration_changed()
 end
 
 script.on_configuration_changed(on_configuration_changed)
-
 
 local function chart_generated_chunks(event)
 	local player = game.players[event.player_index]
@@ -429,7 +399,6 @@ local function chart_generated_chunks(event)
 	player.print("Revealing all generated chunks to your force.")
 end
 
-
 local function _get_ore_name(tag)
 	local text = tag.text
 	local tag_length = string.len(text) -- find length of tag name
@@ -441,7 +410,6 @@ local function _get_ore_name(tag)
 
 	return tag_ore_name
 end
-
 
 local function _get_tag_exceptions(event)
 	local parameters = event.parameter
@@ -460,10 +428,9 @@ local function _get_tag_exceptions(event)
 	return tag_exceptions
 end
 
-
 local function clear_map_tags_and_data(event, tag_exceptions)
 	glib.clearGlobalResourceMapData()
-	
+
 	tag_exceptions = tag_exceptions or {}
 
 	for _, surface in pairs(game.surfaces) do
@@ -490,7 +457,6 @@ local function clear_map_tags_and_data(event, tag_exceptions)
 	end
 end
 
-
 local function reset_map_tags_and_data(event)
 	local player = game.players[event.player_index]
 	clear_map_tags_and_data(nil)
@@ -508,7 +474,6 @@ local function reset_map_tags_and_data(event)
 
 	player.print("Removed and re-tagged all map labels.")
 end
-
 
 local function unifiedCommandHandler(event)
 	log("unifiedCommandHandler\n" .. sb(event))
@@ -534,7 +499,6 @@ local function unifiedCommandHandler(event)
 		player.print("   log -- Log aliases and icons data to log file.", darkRed)
 		player.print("   rebuild -- clear and rebuild aliases and icon data.", darkRed)
 	end
-
 
 	-- WIP
 
@@ -575,9 +539,7 @@ local function unifiedCommandHandler(event)
 	end
 end
 
-
 commands.add_command("resourcemarker", "Enter `/resourcemarker help` for more details.", unifiedCommandHandler)
-
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) for _,i in pairs(t) do i.destroy() end

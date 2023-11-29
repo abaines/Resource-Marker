@@ -1,7 +1,7 @@
 -- Kizrak
 local util = require("util")
 
-local english = require('english')
+local i18n = require('english_lib')
 
 local sb = serpent.block
 
@@ -39,20 +39,7 @@ local function format_number(input)
 end
 
 
--- lua global
-local englishMissingSpamGuard = {}
 
-local function getI18N(resource)
-	local i18n = english[resource]
-	if not i18n and not englishMissingSpamGuard[resource] then
-		local msg = "The english.lua table missing `" .. resource .. "`"
-		log(msg)
-		-- game.print(msg)
-		englishMissingSpamGuard[resource] = true
-	end
-	local localResource = i18n or resource
-	return localResource
-end
 
 
 local function getResourceCounts(resources)
@@ -60,7 +47,7 @@ local function getResourceCounts(resources)
 
 	for _, resource in pairs(resources) do
 		local name = resource.name
-		local localName = getI18N(name)
+		local localName = i18n.resource(name)
 		local amount = resource.initial_amount or resource.amount
 
 		if not resourcesFound[localName] then
@@ -432,7 +419,7 @@ function calculateIconTypes()
 		for _, product in pairs(products) do
 			if global[_ICON_TYPES_][product.name] then
 				global.aliases[name] = product.name
-				global.aliases[getI18N(name)] = product.name
+				global.aliases[i18n.resource(name)] = product.name
 			end
 		end
 	end
@@ -691,7 +678,6 @@ end
 
 commands.add_command("resourcemarker", "Enter `/resourcemarker help` for more details.", unifiedCommandHandler)
 
-log("english:\n" .. sbs(english))
 
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) game.print( #t )
 -- /c t=game.forces[1].find_chart_tags(game.surfaces[1] ) for _,i in pairs(t) do i.destroy() end

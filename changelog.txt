@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.31
+Date: 2023-11-28
+  Changes:
+    - calculateIconTypes for on_configuration_changed
+    - Cleanup code (split into multiple files)
+    - auto formatting
+---------------------------------------------------------------------------------------------------
 Version: 0.7.30
 Date: 2023-11-28
   Changes:

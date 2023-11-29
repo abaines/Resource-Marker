@@ -521,6 +521,15 @@ end
 
 script.on_init(onInit)
 
+
+local function on_configuration_changed()
+	log("on_configuration_changed")
+	calculateIconTypes()
+end
+
+script.on_configuration_changed(on_configuration_changed)
+
+
 local function chart_generated_chunks(event)
 	local player = game.players[event.player_index]
 

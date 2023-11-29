@@ -1,5 +1,4 @@
 -- Kizrak
-
 local i18n = require('english_lib')
 
 local sb = serpent.block
@@ -17,7 +16,6 @@ local _ICON_TYPES_ = "iconTypes" -- global root key
 
 local _RESOURCE_MAP_ = "resourceMap" -- global root key
 
-
 function M.getGlobalMapLocationData(surface, x, y)
 	local name = surface.name
 
@@ -30,7 +28,6 @@ function M.getGlobalMapLocationData(surface, x, y)
 
 	return global[_RESOURCE_MAP_][name][x][y]
 end
-
 
 function M.calculateIconTypes()
 	global[_ICON_TYPES_] = {} -- global root key
@@ -53,7 +50,6 @@ function M.calculateIconTypes()
 			return a.probability < b.probability
 		end
 
-
 		table.sort(products, sorter)
 		-- log(sb( products ))
 
@@ -67,11 +63,9 @@ function M.calculateIconTypes()
 	log("global.aliases:\n" .. sbs(global.aliases))
 end
 
-
 function M.clearGlobalResourceMapData()
-    global[_RESOURCE_MAP_] = {}
+	global[_RESOURCE_MAP_] = {}
 end
-
 
 function M.logIconTypes()
 	-- global root keys
@@ -88,7 +82,6 @@ function M.logIconTypes()
 		end
 		log(_type .. "  " .. table_size(list))
 	end
-
 
 	-- log _ICON_TYPES_
 	_logIconTypes("virtual")
@@ -131,8 +124,7 @@ function M.calculateSignalID(resource)
 		loggedMissingResources[resourceIcon] = true
 	end
 
-    return signalID
+	return signalID
 end
-
 
 return M

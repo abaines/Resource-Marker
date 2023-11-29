@@ -107,7 +107,7 @@ function M.calculateSignalID(resource)
 			local red = {1, 0, 0}
 			game.print({"errors.global-aliases-missing"}, red)
 			game.print({"errors.rebuild-data-structure"}, red)
-			calculateIconTypes()
+			M.calculateIconTypes()
 			local global_aliases_size = table_size(global.aliases) -- luacheck: ignore 421
 			if 0 == global_aliases_size then
 				game.print({"errors.unable-to-repair"}, red)

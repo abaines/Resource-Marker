@@ -184,8 +184,6 @@ local function floodNearbyChartedChunks(surface, force, chunkPosition, resource)
 	return chunkPositions
 end
 
-local calculateIconTypes
-
 -- lua global
 local lastLoggedTagCount = {}
 

@@ -98,8 +98,10 @@ function M.logIconTypes()
 	log("global.aliases\n" .. sb(global.aliases))
 end
 
+-- lua global
+local loggedMissingResources = {}
 
-function M.calculateSignalID()
+function M.calculateSignalID(resource)
 
 	local signalID = {type = "virtual", name = "signal-dot"}
 

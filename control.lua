@@ -206,7 +206,6 @@ end
 local calculateIconTypes
 
 -- lua global
-local loggedMissingResources = {}
 local lastLoggedTagCount = {}
 
 local function updateMapTags(surface, force, chunkPosition, resource)
@@ -236,6 +235,7 @@ local function updateMapTags(surface, force, chunkPosition, resource)
 		return
 	end
 
+	local signalID = glib.calculateSignalID(resource)
 
 	local text = format_number(total)
 
@@ -563,11 +563,11 @@ local function unifiedCommandHandler(event)
 
 	elseif string.find(parameter, "log") then
 		player.print("   log -- Log aliases and icons data to log file.", darkRed)
-		logIconTypes()
+		glib.logIconTypes()
 
 	elseif string.find(parameter, "rebuild") then
 		player.print("   rebuild -- clear and rebuild aliases and icon data.", darkRed)
-		calculateIconTypes()
+		glib.calculateIconTypes()
 
 	else
 		printHelp()

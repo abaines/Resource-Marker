@@ -462,7 +462,7 @@ end
 
 
 local function clear_map_tags_and_data(event, tag_exceptions)
-
+	glib.clearGlobalResourceMapData()
 	
 	tag_exceptions = tag_exceptions or {}
 

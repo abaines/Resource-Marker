@@ -188,6 +188,11 @@ end
 local lastLoggedTagCount = {}
 
 local function updateMapTags(surface, force, chunkPosition, resource)
+	-- Ignore SE core seams. SE places it's own tags.
+	if string.find(string.lower(resource), "core") then
+		return
+	end
+	
 	local flood = floodNearbyChartedChunks(surface, force, chunkPosition, resource)
 	local total = 0
 	local xCenter = 0

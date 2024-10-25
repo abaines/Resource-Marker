@@ -33,17 +33,17 @@ end
 
 function M.calculateIconTypes()
 	storage[_ICON_TYPES_] = {} -- storage root key
-	for key, _ in pairs(game.virtual_signal_prototypes) do
+	for key, _ in pairs(prototypes.virtual_signal) do
 		storage[_ICON_TYPES_][key] = "virtual"
 	end
-	for key, _ in pairs(game.item_prototypes) do
+	for key, _ in pairs(prototypes.item) do
 		storage[_ICON_TYPES_][key] = "item"
 	end
-	for key, _ in pairs(game.fluid_prototypes) do
+	for key, _ in pairs(prototypes.fluid) do
 		storage[_ICON_TYPES_][key] = "fluid"
 	end
 
-	local resourcePrototypes = game.get_filtered_entity_prototypes({{filter = "type", type = "resource"}})
+	local resourcePrototypes = prototypes.get_entity_filtered({{filter = "type", type = "resource"}})
 	storage.aliases = {} -- storage root key
 
 	for name, value in pairs(resourcePrototypes) do

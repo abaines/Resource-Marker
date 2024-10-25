@@ -34,7 +34,7 @@ jobs:
       run: echo "::set-output name=file::$(ls ../*.zip)"
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: artifact
         path: ${{ steps.getfilename.outputs.file }}

@@ -16,8 +16,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Factorio Mod luacheck
-      uses: Roang-zero1/factorio-mod-luacheck@v1.1.0
+    - uses: lunarmodules/luacheck@v1.2.0
 
     - uses: actions/setup-python@v1
 

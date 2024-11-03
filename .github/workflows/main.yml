@@ -20,7 +20,7 @@ jobs:
       with:
         args: .luacheckrc
 
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v5
 
     - name: Check Python and OS Setup
       run: |

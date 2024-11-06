@@ -473,40 +473,38 @@ local function reset_map_tags_and_data(event)
 	player.print("Removed and re-tagged all map labels.")
 end
 
+local blue = {0.7, 0.7, 1}
+local darkRed = {0.9, 0.3, 0.3}
+
+local function printHelp(player)
+	player.print("Parameters for `/resourcemarker` command:", {0.7, 1, 0.7})
+
+	player.print("   chart -- Reveal all generated chunks to player's force.", blue)
+	player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).", blue)
+	player.print("   help -- Display this message.", blue)
+
+	player.print("For debugging and diagnostics only:", {0.9, 0.4, 0.4})
+
+	player.print(
+	"   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels."
+	, darkRed)
+	player.print("   delete -- Remove all map labels and clear mod data.", darkRed)
+	player.print("      a list of ores can be provided to be ignored during tag deletion, such as:", darkRed)
+	player.print("      /resourcemarker delete,Copper ore,Iron ore", darkRed)
+	player.print("   log -- Log aliases and icons data to log file.", darkRed)
+	player.print("   rebuild -- clear and rebuild aliases and icon data.", darkRed)
+end
+
 local function unifiedCommandHandler(event)
 	log("unifiedCommandHandler\n" .. sb(event))
 	local parameter = event.parameter and event.parameter:lower()
 	local player = game.players[event.player_index]
 
-	local blue = {0.7, 0.7, 1}
-	local darkRed = {0.9, 0.3, 0.3}
-
-	local function printHelp()
-		player.print("Parameters for `/resourcemarker` command:", {0.7, 1, 0.7})
-
-		player.print("   chart -- Reveal all generated chunks to player's force.", blue)
-		player.print("   generate <radius in chunks> -- Generate chunks around starting area (in chunk radius).", blue)
-		player.print("   help -- Display this message.", blue)
-
-		player.print("For debugging and diagnostics only:", {0.9, 0.4, 0.4})
-
-		player.print(
-		"   retag -- Remove all map labels and clear mod data, then rebuild mod data and retag all resource labels."
-		, darkRed)
-		player.print("   delete -- Remove all map labels and clear mod data.", darkRed)
-		player.print("      a list of ores can be provided to be ignored during tag deletion, such as:", darkRed)
-		player.print("      /resourcemarker delete,Copper ore,Iron ore", darkRed)
-		player.print("   log -- Log aliases and icons data to log file.", darkRed)
-		player.print("   rebuild -- clear and rebuild aliases and icon data.", darkRed)
-	end
-
-	-- WIP
-
 	if not parameter then
-		printHelp()
+		printHelp(player)
 
 	elseif string.find(parameter, "help") or string.find(parameter, "?") then
-		printHelp()
+		printHelp(player)
 
 	elseif string.find(parameter, "chart") then
 		player.print("   chart -- Reveal all generated chunks to player's force.", blue)
@@ -536,7 +534,7 @@ local function unifiedCommandHandler(event)
 		glib.calculateIconTypes()
 
 	else
-		printHelp()
+		printHelp(player)
 
 	end
 end

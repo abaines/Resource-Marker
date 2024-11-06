@@ -75,14 +75,14 @@ function M.logIconTypes()
 	-- _ICON_TYPES_
 	-- aliases
 
-	local function _logIconTypes(_type)
+	local function _logIconTypes(input_type)
 		local list = {}
 		for key, value in pairs(storage[_ICON_TYPES_]) do
-			if value == _type then
+			if value == input_type then
 				table.insert(list, key)
 			end
 		end
-		log(_type .. "  " .. table_size(list))
+		log(input_type .. "  " .. table_size(list))
 	end
 
 	-- log _ICON_TYPES_

@@ -17,7 +17,7 @@ local function table_length(tb)
 	assert(type(tb) == 'table')
 
 	local count = 0
-	for k in pairs(tb) do
+	for _k in pairs(tb) do
 		count = count + 1
 	end
 	return count
@@ -159,7 +159,7 @@ end
 local function floodNearbyChartedChunks(surface, force, chunkPosition, resource)
 	local chunkPositions = getNearbyChartedChunks(surface, force, chunkPosition, resource)
 
-	for i = 0, 1000 do
+	for _i = 0, 1000 do
 		local sizeStart = table_size(chunkPositions)
 
 		for key, value in pairs(chunkPositions) do
@@ -235,7 +235,7 @@ local function updateMapTags(surface, force, chunkPosition, resource)
 		-- game.print(warning)
 
 	else -- able to place new tag, so remove olds ones
-		for key, value in pairs(flood) do
+		for _key, value in pairs(flood) do
 			local oldTag = value.tag
 			if oldTag and oldTag.valid then
 				oldTag.destroy()

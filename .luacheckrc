@@ -1,3 +1,17 @@
 std = {
-    globals = {"serpent", "table_size", "settings", "game", "script", "defines", "log", "storage", "data"},
+    globals = {
+        "data",
+        "defines", 
+        "game", 
+        "log", 
+        "pairs",
+        "prototypes",
+        "require",
+        "script", 
+        "serpent",
+        "settings",
+        "storage", 
+        "table_size",
+        "table",
+    },
  }

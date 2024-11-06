@@ -1,9 +1,11 @@
 std = {
     globals = {
+        "assert",
         "data",
         "defines", 
         "game", 
         "log", 
+        "math",
         "pairs",
         "prototypes",
         "require",
@@ -11,7 +13,10 @@ std = {
         "serpent",
         "settings",
         "storage", 
+        "string",
         "table_size",
         "table",
+        "tonumber",
+        "type",
     },
  }

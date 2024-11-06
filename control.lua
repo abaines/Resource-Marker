@@ -500,10 +500,7 @@ local function unifiedCommandHandler(event)
 	local parameter = event.parameter and event.parameter:lower()
 	local player = game.players[event.player_index]
 
-	if not parameter then
-		printHelp(player)
-
-	elseif string.find(parameter, "help") or string.find(parameter, "?") then
+	if not parameter or string.find(parameter, "help") or string.find(parameter, "?") then
 		printHelp(player)
 
 	elseif string.find(parameter, "chart") then

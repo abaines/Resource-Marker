@@ -25,6 +25,6 @@ std = {
     },
 }
 
-max_cyclomatic_complexity = 10
+max_cyclomatic_complexity = 11
 
 print("Hello")

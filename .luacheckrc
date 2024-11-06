@@ -8,6 +8,7 @@ std = {
         "game",
         "log",
         "math",
+        "mods",
         "pairs",
         "prototypes",
         "require",

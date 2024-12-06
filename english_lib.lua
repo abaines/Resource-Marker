@@ -1,5 +1,6 @@
 -- Kizrak
-local english = require('english')
+local english = require('locale-server.english')
+local russian = require('locale-server.russian')
 
 local sb = serpent.block
 
@@ -16,6 +17,8 @@ local englishMissingSpamGuard = {}
 
 function M.resource(resource)
 	local i18n = english[resource]
+	local i18n_russian = russian[resource]
+	
 	if not i18n and not englishMissingSpamGuard[resource] then
 		local msg = "The english.lua table missing `" .. resource .. "`"
 		log(msg)

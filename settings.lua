@@ -1,4 +1,11 @@
 data:extend({
+	{
+		type = "string-setting",
+		name = "global-map-tag-language",
+		setting_type = "startup",
+		default_value = "en",
+		allowed_values = {"en", "ru"}
+	},
 	-- runtime-global
 	{
 		type = "bool-setting",

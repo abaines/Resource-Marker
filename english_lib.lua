@@ -36,12 +36,9 @@ end
 
 
 function M.resource(resource)
-	local global_map_tag_language = get_global_map_tag_language()
-	log(global_map_tag_language)
 	local i18n_file_data = get_language_server_file()
 
-	local i18n = english[resource]
-	local i18n_russian = russian[resource]
+	local i18n = i18n_file_data[resource]
 
 	if not i18n and not englishMissingSpamGuard[resource] then
 		local msg = "The english.lua table missing `" .. resource .. "`"

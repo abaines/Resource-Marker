@@ -16,9 +16,8 @@ local M = {}
 local englishMissingSpamGuard = {}
 
 local function get_global_map_tag_language()
-	return settings.startup["global-map-tag-language"].value
+	return settings.startup["global-map-tag-language"].value or "get_global_map_tag_language ERROR!"
 end
-
 
 local function get_language_server_file()
 	local global_map_tag_language = get_global_map_tag_language()
@@ -27,13 +26,12 @@ local function get_language_server_file()
 		return english
 	elseif global_map_tag_language=="ru" then
 		return russian
-	else
-		local msg = "Unknown language!" .. str(global_map_tag_language)
-		log(msg)
-		error(msg)
 	end
-end
 
+	local msg = "get_language_server_file :: Unknown language! " .. global_map_tag_language
+	log(msg)
+	error(msg)
+end
 
 function M.resource(resource)
 	local i18n_file_data = get_language_server_file()
